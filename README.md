@@ -2,7 +2,7 @@
 
 Setup
 ---
-Clone the repo and put latest fmmpeg static build executable (http://ffmpeg.zeranoe.com/builds/)
+Clone the repo and put latest FFmpeg static build executable (http://ffmpeg.zeranoe.com/builds/)
 - npm install
 - nmp install http-server -g
 - http-server
