@@ -44,4 +44,4 @@ Capture keyboard / mouse evets (html5 canvas) and send them over websockets.
 Notes
 ---
 - tested on chrome & firefox
-- 
+- ffmpeg.json is read in rudimentary fashion, to test fast switch of flags
