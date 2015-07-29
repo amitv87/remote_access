@@ -1,0 +1,11 @@
+{
+  "name": "RemoteAccess",
+  "version": "0.1.0",
+  "dependencies": {
+    "ws": "~0.7.2"
+  },
+  "optionalDependencies": {
+    "nodobjc": "~2.0.0",
+    "edge": "~0.10.1"
+  }
+}
