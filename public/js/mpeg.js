@@ -55,12 +55,12 @@ function AudioFormatReader_MPEG (ErrorCallback, DataReadyCallback)
 	// this.AddID3Tag = true;
 
 	if(isFirefox)
-		this.WindowSize = 6;
+		this.WindowSize = 5;
 	else
 		this.WindowSize = 4;
 
 	if(isFirefox)
-		this.UseFrames = 3;
+		this.UseFrames = 2;
 	else
 		this.UseFrames = 2;
 
