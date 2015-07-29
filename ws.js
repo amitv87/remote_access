@@ -1,11 +1,14 @@
 var log = console.log;
 var fs = require('fs');
-var ffmpeg_scr, ffmpeg_aud, interactions;
-
-if(/^win/.test(process.platform))
+var ffmpeg_scr, ffmpeg_aud, interactions, os;
+if(/^win/.test(process.platform)){
+  os = 'win';
   interactions = require("./win_interactions.js");
-else if(/^darwin/.test(process.platform))
+}
+else if(/^darwin/.test(process.platform)){
+  os = 'mac';
   interactions = require("./mac_interactions.js");
+}
 else{
   console.log('platform not supported');
   return
@@ -33,7 +36,7 @@ wss_aud.on('connection', function connection(ws) {
 
 function ffmpeg(type, ws){
   try{
-    var args = JSON.parse(sjc(fs.readFileSync('./ffmpeg.json', 'utf8')))[type];
+    var args = JSON.parse(sjc(fs.readFileSync('./ffmpeg.json', 'utf8')))[os][type];
     // log(type, args.join(' '));
     var encoder = childProcess.spawn('./ffmpeg', args);
     log('starting encoder', type);
