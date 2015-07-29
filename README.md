@@ -2,7 +2,7 @@
 
 Setup
 ---
-Clone the repo and put latest fmmpeg static build executable (http://ffmpeg.zeranoe.com/builds/)
+Clone the repo and put latest FFmpeg static build executable (http://ffmpeg.zeranoe.com/builds/)
 - npm install
 - nmp install http-server -g
 - http-server
@@ -46,3 +46,7 @@ Notes
 ---
 - tested on chrome & firefox
 - ffmpeg.json is read in rudimentary fashion, to fast switch ffmpeg flags
+
+### Known bugs
+- mouse drag and drop is broken on mac
+- remote and client mouse pointers do not coincide (decoder issue with specific resolutions)
