@@ -275,15 +275,16 @@ p.decode(<binary>);
       var height = options.height || canvasObj.canvas.height;
       
       if (canvasObj.canvas.width !== width || canvasObj.canvas.height !== height || !canvasObj.webGLCanvas){
-        canvasObj.canvas.width = width;
-        canvasObj.canvas.height = height;
+        // canvasObj.canvas.width = width;
+        // canvasObj.canvas.height = height;
         canvasObj.webGLCanvas = new WebGLCanvas(canvasObj.canvas, undefined, canvasObj.contextOptions);
       };
       
       canvasObj.webGLCanvas.drawNextOutputPicture(
                     width, 
-                    height, 
-                    null, 
+                    height,
+                    // null,
+                    {top:0, left:0, width:canvasObj.canvas.width, height:canvasObj.canvas.height}, 
                     options.data);
       var self = this;
       self.recycleMemory(options.data);

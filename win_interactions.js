@@ -66,17 +66,19 @@ var _getScreenBounds = edge.func({
   references: [ 'System.Drawing.dll', 'System.Windows.Forms.dll' ]
 });
 
-var bounds;
-_getScreenBounds(null,function(error, result){
-  if(!error)
-    bounds = result;
-});
-var getScreenBounds = function(){
-    return {width: bounds.Width, height: bounds.Height}
+var screenBounds;
+var getScreenBounds = function(callback){
+    _getScreenBounds(null,function(error, result){
+      if(!error){
+        screenBounds = result;
+        if(callback)
+          callback({width: screenBounds.Width, height: screenBounds.Height})
+      }
+    });
 }
-
 
 module.exports = {
   sendEvent: sendEvent,
-  getScreenBounds: getScreenBounds
+  getScreenBounds: getScreenBounds,
+  screenBounds: screenBounds
 }

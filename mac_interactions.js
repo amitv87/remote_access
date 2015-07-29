@@ -240,8 +240,7 @@ var key = function(kc){
     keyu(kc);
 }
 
-var resw = $.CGDisplayPixelsWide(), resh = $.CGDisplayPixelsHigh();
-
+var screenBounds = {width:$.CGDisplayPixelsWide(), height:$.CGDisplayPixelsHigh()};
 init();
 
 var sendEvent = function(arr){
@@ -261,18 +260,21 @@ var sendEvent = function(arr){
     else if(arr[0] == 3)
       RightButtonRelease();
     else
-      Place(arr[1] * resw, arr[2] * resh);
+      Place(arr[1] * screenBounds.width, arr[2] * screenBounds.height);
   }
   else if(arr.length == 2)
     Scroll(arr[1]/10, arr[0]/10);
 }
 
-var getScreenBounds = function(){
-    return {width: resw, height: resh}
+var getScreenBounds = function(callback){
+    screenBounds = {width:$.CGDisplayPixelsWide(), height:$.CGDisplayPixelsHigh()};
+    if(callback)
+        callback(screenBounds);
 }
 
 module.exports = {
     sendEvent: sendEvent,
     getScreenBounds: getScreenBounds,
+    screenBounds: screenBounds,
     quit: quit
 }

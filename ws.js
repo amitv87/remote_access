@@ -22,7 +22,9 @@ var wss_scr = new WebSocketServer({port:8081});
 var wss_aud = new WebSocketServer({port:8082});
 
 wss_scr.on('connection', function connection(ws) {
-  ws.send(JSON.stringify(interactions.getScreenBounds()));
+  interactions.getScreenBounds(function(data){
+    ws.send(JSON.stringify(data));
+  })
   ws.on('message', function(data){
     sendEvent(data);
   });
