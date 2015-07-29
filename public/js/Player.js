@@ -274,7 +274,7 @@ p.decode(<binary>);
       var width = options.width || canvasObj.canvas.width;
       var height = options.height || canvasObj.canvas.height;
       
-      if (canvasObj.canvas.width !== width || canvasObj.canvas.height !== height || !canvasObj.webGLCanvas){
+      if (!canvasObj.webGLCanvas){
         // canvasObj.canvas.width = width;
         // canvasObj.canvas.height = height;
         canvasObj.webGLCanvas = new WebGLCanvas(canvasObj.canvas, undefined, canvasObj.contextOptions);
