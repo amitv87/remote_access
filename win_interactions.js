@@ -6,7 +6,7 @@ var sendEvent = edge.func({
 	using WindowsInput.Native;
 	using System.Threading.Tasks;
     public class Startup
-    {	
+    {
     	static InputSimulator sim = new InputSimulator();
       static IKeyboardSimulator kb = sim.Keyboard;
       static IMouseSimulator mo = sim.Mouse;
@@ -49,6 +49,34 @@ var sendEvent = edge.func({
   references: [ 'WindowsInput.dll' ]
 });
 
+var _getScreenBounds = edge.func({
+  source: function() {/*
+    using System.Drawing;
+    using System.Windows.Forms;
+    using System.Threading.Tasks;
+    public class Startup
+    {
+
+      public async Task<object> Invoke(dynamic obj)
+      {
+        return Screen.PrimaryScreen.Bounds;
+      }
+    }
+  */},
+  references: [ 'System.Drawing.dll', 'System.Windows.Forms.dll' ]
+});
+
+var bounds;
+_getScreenBounds(null,function(error, result){
+  if(!error)
+    bounds = result;
+});
+var getScreenBounds = function(){
+    return {width: bounds.Width, height: bounds.Height}
+}
+
+
 module.exports = {
-  sendEvent: sendEvent
+  sendEvent: sendEvent,
+  getScreenBounds: getScreenBounds
 }

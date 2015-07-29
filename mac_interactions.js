@@ -267,9 +267,12 @@ var sendEvent = function(arr){
     Scroll(arr[1]/10, arr[0]/10);
 }
 
+var getScreenBounds = function(){
+    return {width: resw, height: resh}
+}
+
 module.exports = {
     sendEvent: sendEvent,
-    resw: resw,
-    resh: resw,
+    getScreenBounds: getScreenBounds,
     quit: quit
 }
