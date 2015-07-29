@@ -2,6 +2,7 @@
 
 Setup
 ---
+Clone the repo and put latest fmmpeg static build executable (http://ffmpeg.zeranoe.com/builds/)
 - npm install
 - nmp install http-server -g
 - http-server
@@ -20,7 +21,7 @@ Server-side
 - win - screen-capture-recorder built in audio capture
 
 ### FFmpeg Encoder
-latest static build should work from http://ffmpeg.zeranoe.com/builds/
+latest static build should work fine
 - mac -  used 64bit N-73753-g1aab5d8-tessus
 - win -  used 64bit N-74113-gcdb0225
 
