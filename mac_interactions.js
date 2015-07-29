@@ -243,6 +243,7 @@ var key = function(kc){
 var screenBounds = {width:$.CGDisplayPixelsWide(), height:$.CGDisplayPixelsHigh()};
 init();
 
+var down = false;
 var sendEvent = function(arr){
   if(arr.length == 5){
     if(arr[0] == 1)
@@ -251,16 +252,24 @@ var sendEvent = function(arr){
       keyu(keyMap[arr[1]]);
   }
   else if(arr.length == 3){
-    if(arr[0] == 1)
+    if(arr[0] == 1){
       LeftButtonPress();
-    else if(arr[0] == 0)
+      down = true;
+    }
+    else if(arr[0] == 0){
       LeftButtonRelease();
+      down = false
+    }
     else if(arr[0] == 4)
       RightButtonPress();
     else if(arr[0] == 3)
       RightButtonRelease();
-    else
-      Place(arr[1] * screenBounds.width, arr[2] * screenBounds.height);
+    else{
+      if(down)
+        DragPlace(arr[1] * screenBounds.width, arr[2] * screenBounds.height);
+      else
+        Place(arr[1] * screenBounds.width, arr[2] * screenBounds.height);
+    }
   }
   else if(arr.length == 2)
     Scroll(arr[1]/10, arr[0]/10);
