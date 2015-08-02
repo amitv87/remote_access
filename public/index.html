@@ -4,12 +4,13 @@
     <meta charset="utf-8" />
     <style type="text/css">
     canvas:-webkit-full-screen {
-      /*width: 100%;*/
+      width: 100%;
       /*height: 100%;*/
     }
     canvas{
-      /*transition: width 0.5s, height 0.5s, transform 0.5s;*/
-      transition: all 0.5s ease;
+      width: 0%;
+      -webkit-transition: all 0.5s;
+      transition: all 0.5s;
       outline:none;
     }
     td{
@@ -115,6 +116,8 @@
               var data = JSON.parse(msg.data);
               console.log(data);
               if(data.width && data.height){
+                canvas.style.width = data.width + 'px';
+                canvas.style.height = data.height + 'px';
                 canvas.width = data.width;
                 canvas.height = data.height;
                 if(data.platform == 'android'){
