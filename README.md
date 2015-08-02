@@ -37,7 +37,7 @@ Client-side
 ---
 ### Playback
 - video - raw h264 decoder and webgl canvas playback https://github.com/mbebenita/Broadway
-- audio - js decoder and html5 audio api https://github.com/JoJoBond/3LAS
+- audio - mp3 js decoder and html5 audio api https://github.com/JoJoBond/3LAS
 
 ### Interactions
 Capture keyboard / mouse evets (html5 canvas) and send them over websockets.
@@ -45,8 +45,9 @@ Capture keyboard / mouse evets (html5 canvas) and send them over websockets.
 Notes
 ---
 - tested on chrome & firefox
-- ffmpeg.json is read in rudimentary fashion, to fast switch ffmpeg flags
+- ffmpeg.json is read in an ugly fashion, to fast switch ffmpeg flags
 
 ### Known bugs
-- mouse drag and drop is broken on mac
+- mouse double click is broken on mac
 - remote and client mouse pointers do not coincide (decoder issue with specific resolutions)
+- high audio latency (shoul switch to some opus)
