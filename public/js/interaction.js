@@ -15,7 +15,6 @@ function initInteractions(){
   canvas.addEventListener("touchmove", doTouchMove, false);
   canvas.addEventListener("touchend", doTouchEnd, false);
   canvas.oncontextmenu = new Function("return false");
-  // canvas.style.cursor = "none";
   
   function doKeyDown(e){
     sendKey(1,e.keyCode,e.altKey,e.shiftKey,e.ctrlKey);
@@ -32,9 +31,12 @@ function initInteractions(){
     e.preventDefault();
     return false;
   }
+
+  var mouseDown = 0;
   function doMouseDown(e){
     // e.target.onmousemove = doMouseMove;
     var type = (e.button == 2 ? 4 : 1);
+    mouseDown = type;
     sendMouse(type, e);
     e.cancelBubble = true;
     if( e.stopPropagation ) e.stopPropagation();
@@ -42,21 +44,22 @@ function initInteractions(){
   function doMouseUp(e){
     // e.target.onmousemove = null;
     var type = (e.button == 2 ? 3 : 0);
+    mouseDown = type;
     sendMouse(type, e);
     e.cancelBubble = true;
     if( e.stopPropagation ) e.stopPropagation();
   }
   function doMouseMove(e){
+    if(canvas.android && mouseDown != 1)
+      return;
     sendMouse(2, e);
     e.cancelBubble = true;
     if( e.stopPropagation ) e.stopPropagation();
   }
-  var mouseDown = 0;
   var newX = 0;
   var newY = 0;
   function sendMouse(down, e){
     // console.log(e.offsetX, e.layerX, e.offsetY, e.layerY)
-    mouseDown = down;
     // newX = (e.offsetX || e.layerX)/canvas.width;
     // newX = newX + (newX * 0.0054);
     // newY = (e.offsetY || e.layerY)/canvas.height;
@@ -79,17 +82,19 @@ function initInteractions(){
       return [canvasMouseX, canvasMouseY];
   }
   function sendMouseWS(down, x, y){
-    var cords = [x,y];
+    var cords = !canvas.android ? [x,y] : rotate(x, y);
     send([down,cords[0],cords[1]]);
   }
   function sendKey(down,key,alt,shift,ctrl){
     send([down,key != 224 ? key : 91,alt ? 1 : 0,shift ? 1 : 0,ctrl ? 1 : 0]);
   }
-  function sendSpecial(action){
+  window.sendSpecial = function(action){
       send([action]);
   }
   var scroll = true;
   function doMouseWheel(e){
+    if(canvas.android)
+      return;
     // if(scroll) {
       var x = Math.round(e.deltaX);
       var y = -Math.round(e.deltaY);
@@ -117,6 +122,24 @@ function initInteractions(){
     e.cancelBubble = true;
     if( e.stopPropagation ) e.stopPropagation();
   }
+
+  function rotate(x, y) {
+    var xm = 1/2,
+    ym = 1/2,
+    cos = Math.cos;
+    sin = Math.sin;
+
+    a = angle * Math.PI / 180;
+    // Convert to radians because that's what
+                           // JavaScript likes
+
+    // Subtract midpoints, so that midpoint is translated to origin
+    // and add it in the end again
+    xr = (x - xm) * cos(a) - (y - ym) * sin(a)   + xm;// * cos(a) - ym * sin(a);
+    yr = (x - xm) * sin(a) + (y - ym) * cos(a)   + ym;// * cos(a) - xm * sin(a);
+    return [xr, yr];
+  }
+
   function send(e){
     // console.log(e);
     ws.send(JSON.stringify(e));

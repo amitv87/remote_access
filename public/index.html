@@ -7,11 +7,48 @@
       /*width: 100%;*/
       /*height: 100%;*/
     }
+    canvas{
+      /*transition: width 0.5s, height 0.5s, transform 0.5s;*/
+      transition: all 0.5s ease;
+      outline:none;
+    }
+    td{
+      text-align: center;
+      cursor: pointer;
+      padding: 8px;
+      font-size: 18px;
+    }
+    td:hover{
+      background-color: black;
+      color: white;
+      transition: all 0.5s ease;
+    }
     </style>
 </head>
-<body style="text-align:center;margin:0;">
-    <canvas id="canvas"></canvas>
-    <input type="button" value="hs" text="fs" onclick="goFS()"/>
+<body style="text-align:center;">
+    <div id="conatiner">
+      <canvas id="canvas"></canvas>
+    </div>
+    <div style="clear:both">
+    <div id="controls" style="display:none;text-align:center;margin:0 auto;">
+      <table style="text-align:center;margin:0 auto;">
+        <tr>
+          <td onclick="sendSpecial('recentapps')">apps</td>
+          <td onclick="sendSpecial('menu')">menu</td>
+          <td onclick="sendSpecial('home')">home</td>
+          <td onclick="sendSpecial('search')">search</td>
+          <td onclick="sendSpecial('back')">back</td>
+        </tr>
+        <tr>
+          <td onclick="sendSpecial('landscape')">L</td>
+          <td onclick="sendSpecial('portrait')">P</td>
+          <td onclick="sendSpecial('power')">power</td>
+          <!-- <td onclick="start()">start</td> -->
+          <!-- <td onclick="stop()">stop</td> -->
+        </tr>
+      </table>
+    </div>
+    <!-- <input type="button" value="hs" text="fs" onclick="goFS()"/> -->
     <script src="/js/WebGLCanvas.js"></script>
     <script src="/js/Decoder.js"></script>
     <script src="/js/Player.js"></script>
@@ -24,6 +61,8 @@
     <script>
       var host = window.location.hostname;
       // var host = '192.168.1.2';
+      // var host = '192.168.1.4';
+      // var host = '10.100.101.74';
     	var ws_vidpath = 'ws://' + host + ':8081';
       var ws_audpath = 'ws://' + host + ':8082';
 
@@ -74,10 +113,22 @@
             }
             else {
               var data = JSON.parse(msg.data);
+              console.log(data);
               if(data.width && data.height){
                 canvas.width = data.width;
                 canvas.height = data.height;
+                if(data.platform == 'android'){
+                  canvas.android = true;
+                  document.getElementById('controls').style.display = 'block';
+                  setOrientation(data.orientation);
+                  canvas.style.cursor = "pointer";
+                }
+                else{
+
+                }
               }
+              else if(data.status == 'orientation')
+                setOrientation(data.value);
             }
           }
           ws.onclose = function(){
@@ -90,6 +141,18 @@
       }
 
       initInteractions();
+
+      window.angle = 0;
+      function setOrientation(value){
+        switch(value){
+          case 0: angle = 0;break;
+          case 1: angle = -90;break;
+          case 2: angle = -180;break;
+          case 3: angle = 90;break;
+        }
+        canvas.style.transform = "rotate(" + angle.toString() + "deg)";
+      }
+
       function goFS(){
         if (canvas.requestFullscreen) {
           canvas.requestFullscreen();

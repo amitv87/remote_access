@@ -64,6 +64,9 @@ function AudioFormatReader_MPEG (ErrorCallback, DataReadyCallback)
 	else
 		this.UseFrames = 2;
 
+
+	// this.WindowSize = 30;
+	// this.UseFrames = 20;
 	// Number of frames to decode together (keyword: byte-reservoir)
 	// For live streaming this means that you can push the minimum number of frames
 	// on connection to the client to reduce waiting time without effecting the latency.
