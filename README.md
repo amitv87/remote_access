@@ -49,5 +49,4 @@ Notes
 
 ### Known bugs
 - mouse double click is broken on mac
-- remote and client mouse pointers do not coincide (decoder issue with specific resolutions)
-- high audio latency (shoul switch to some opus)
+- high audio latency (should switch to opus)
