@@ -2,7 +2,7 @@
 
 Setup
 ---
-Clone the repo and put latest FFmpeg static build executable (http://ffmpeg.zeranoe.com/builds/)
+Clone the repo and pull latest FFmpeg static build executable (http://ffmpeg.zeranoe.com/builds/)
 - npm install
 - nmp install http-server -g
 - http-server
@@ -27,7 +27,7 @@ latest static build should work fine
 
 ### Streaming format
 - video - raw h264
-- audio - mp3 cbr
+- audio - aac
 
 ### Interactions (mouse / keyboard)
 - mac - https://github.com/Loknar/node-macmouse (node objc)
@@ -37,7 +37,7 @@ Client-side
 ---
 ### Playback
 - video - raw h264 decoder and webgl canvas playback https://github.com/mbebenita/Broadway
-- audio - mp3 js decoder and html5 audio api https://github.com/JoJoBond/3LAS
+- audio - native mpHTML5 audio api
 
 ### Interactions
 Capture keyboard / mouse evets (html5 canvas) and send them over websockets.
@@ -49,4 +49,4 @@ Notes
 
 ### Known bugs
 - mouse double click is broken on mac
-- high audio latency (should switch to opus)
+- choppy audio
