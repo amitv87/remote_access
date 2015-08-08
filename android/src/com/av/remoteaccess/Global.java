@@ -1,6 +1,5 @@
 package com.av.remoteaccess;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -10,15 +9,11 @@ import java.util.List;
 
 import org.apache.http.conn.util.InetAddressUtils;
 
-import android.app.Application;
-import android.app.LoadedApk;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ClipboardManager.OnPrimaryClipChangedListener;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.IClipboard;
-import android.content.Intent;
 import android.graphics.Point;
 import android.hardware.display.DisplayManager;
 import android.os.ServiceManager;
@@ -26,7 +21,6 @@ import android.util.Log;
 import android.view.Display;
 import android.view.IWindowManager;
 import android.view.WindowManager;
-import android.os.Process;
 
 public class Global {
     private static final String TAG = Global.class.getCanonicalName();

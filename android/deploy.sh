@@ -5,9 +5,8 @@ ACTION=$1
 MODE=$2
 
 if [ "$ACTION" == "build" ]; then
-	echo "building jni libs and apk"
-	ndk-build $MODE all
-	ant $MODE debug
+	echo "building apk"
+	ant $MODE debug -q
 fi
 
 adb install -r bin/RemoteAccess-debug.apk

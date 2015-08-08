@@ -80,21 +80,68 @@
         }
       );
 
+      var buff = [], src = '';
+      var buffer_counter = 0, a_counter = 0;
+      var audio_s_length = 10, buffer_length = 7;
+      var audios = [];
+      for(var i = 0; i < audio_s_length; i++){
+        var a = new Audio();
+        a.autoplay = true;
+        a.defaultPlaybackRate = 1;
+        a.normalize();
+        audios.push(a);
+      }
+      var audio = audios[0];
+
+      // var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      // var source = audioCtx.createBufferSource();
+      // var _buffer = (new Uint8Array()).buffer;
+      // var _appendBuffer = function(buffer) {
+      //   var tmp = new Uint8Array(_buffer.byteLength + buffer.byteLength);
+      //   tmp.set(new Uint8Array(_buffer), 0);
+      //   tmp.set(new Uint8Array(buffer), _buffer.byteLength);
+      //   _buffer = tmp.buffer;
+      // };
       var aud = new ws_client(ws_audpath,
         function(data){
-          FormatReader.PushData(data);
+          // FormatReader.PushData(data);
+          buff.push(new Uint8Array(data));
+          // _appendBuffer(data);
+          if(buffer_counter == buffer_length){
+            buffer_counter = 0;
+            audio.muted = true;
+            audio = audios[a_counter];
+            URL.revokeObjectURL(src);
+            src = URL.createObjectURL(new Blob(buff, {type:'audio/mpeg'}))
+            audio.src = src;
+            audio.muted = false;
+            buff = [];
+            a_counter++;
+            if(a_counter >= audio_s_length)
+              a_counter = 0;
+
+            // audioCtx.decodeAudioData(_buffer, function(buffer) {
+            //   source = audioCtx.createBufferSource();
+            //   source.buffer = buffer;
+            //   source.connect(audioCtx.destination);
+            //   source.start(0);
+            // },
+            // function(e){"Error with decoding audio data", e});
+            // _buffer = (new Uint8Array()).buffer;
+          }
+          buffer_counter++;
         },
         function(){
-          var AudioPlayer = new PCMAudioPlayer();
-          window.FormatReader = new AudioFormatReader('audio/mpeg', 
-            function(){
-              console.log("Reader error: Decoding failed.");
-            },
-            function(data){
-              while (FormatReader.SamplesAvailable())
-                AudioPlayer.PushBuffer(FormatReader.PopSamples());
-            }
-          );
+          // var AudioPlayer = new PCMAudioPlayer();
+          // window.FormatReader = new AudioFormatReader('audio/mpeg',
+          //   function(){
+          //     console.log("Reader error: Decoding failed.");
+          //   },
+          //   function(){
+          //     while (FormatReader.SamplesAvailable())
+          //       AudioPlayer.PushBuffer(FormatReader.PopSamples());
+          //   }
+          // );
         }
       );
 

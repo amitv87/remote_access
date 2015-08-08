@@ -2,7 +2,6 @@ package com.av.remoteaccess;
 
 import java.lang.reflect.Method;
 
-import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.IBinder;
 import android.util.Log;
@@ -21,7 +20,7 @@ public class Reflection{
     public static Method setDisplayLayerStack;
     public static Method setDisplayProjection;
     public static Method setDisplaySurface;
-    
+
     public static void init() {
         try {
             Surface = Class.forName("android.view.SurfaceControl");
@@ -35,7 +34,7 @@ public class Reflection{
         }
         try {
             screenshotBmp = Surface.getMethod("screenshot", int.class, int.class);
-            Bitmap bmp = (Bitmap) Reflection.screenshotBmp.invoke(null, 384, 682);
+//            Bitmap bmp = (Bitmap) Reflection.screenshotBmp.invoke(null, 384, 682);
 //            Log.i(TAG, "+++++++++++++++++\n+++++++++++++\n+++++++++++++after bmp, length: " + bmp.getByteCount());
         } catch (Exception e) {
             Log.i(TAG, "no such method found", e);
