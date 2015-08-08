@@ -115,7 +115,7 @@ public class AudioCapturer{
                     dequeue.start();
                     int len = 0, bufferIndex = 0;
                     while (isRunning) {
-                        bufferIndex = mMediaCodec.dequeueInputBuffer(CALLBACK_BUFFER_SIZE_MS * 100);
+                        bufferIndex = mMediaCodec.dequeueInputBuffer(CALLBACK_BUFFER_SIZE_MS);
                         if (bufferIndex>=0) {
                             inputBuffers[bufferIndex].clear();
                             len = audioRecord.read(inputBuffers[bufferIndex], rawBytesLength);
