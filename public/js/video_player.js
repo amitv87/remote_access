@@ -1,4 +1,5 @@
 function H264Player(){
+  console.log('using', this);
 	var p = new Player({
     useWorker: true,
     workerFile: "/js/Decoder.js",
@@ -35,11 +36,11 @@ function H264Player(){
     return res;
   };
   
-  this.decodeRaw = function(data){
-    if (!(data && data.length)){
+  this.play = function(buffer){
+    if (!(buffer && buffer.byteLength)){
       return;
     };
-    
+    var data = new Uint8Array(buffer);
     var hit = function(subarray){
       if (subarray){
         bufferAr.push(subarray);

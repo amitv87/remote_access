@@ -2,31 +2,19 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
-    <style type="text/css">
-    canvas:-webkit-full-screen {
-      width: 100%;
-      /*height: 100%;*/
-    }
-    canvas{
-      width: 0%;
-      -webkit-transition: all 0.5s;
-      transition: all 0.5s;
-      outline:none;
-    }
-    td{
-      text-align: center;
-      cursor: pointer;
-      padding: 8px;
-      font-size: 18px;
-    }
-    td:hover{
-      background-color: black;
-      color: white;
-      transition: all 0.5s ease;
-    }
-    </style>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
 </head>
-<body style="text-align:center;">
+<body style="text-align:center;width:1005;height:100%">
+    <!-- <div id="cockpit">
+      <div id="bar"></div>
+      <button style="background-color:#a9db80">start</button>
+      <button style="background-color:#f2825b">stop</button>
+      <button style="background-color:#fceabb;">reconnect</button>
+      <hr>
+      <div style="font-size:13px;">clipboard</div>
+      <button style="background-color:#a7c7dc">set</button>
+      <button style="background-color:#a7c7dc;margin-bottom:10px;">get</button>
+    </div> -->
     <div id="conatiner">
       <canvas id="canvas"></canvas>
     </div>
@@ -44,8 +32,6 @@
           <td onclick="sendSpecial('landscape')">L</td>
           <td onclick="sendSpecial('portrait')">P</td>
           <td onclick="sendSpecial('power')">power</td>
-          <!-- <td onclick="start()">start</td> -->
-          <!-- <td onclick="stop()">stop</td> -->
         </tr>
       </table>
     </div>
@@ -57,93 +43,39 @@
     <script src="/js/mpeg.js"></script>
     <script src="/js/format_reader.js"></script>
     <script src="/js/audio_player.js"></script>
+    <script src="/js/audio_players.js"></script>
     <script src="/js/interaction.js"></script>
     <script src="/js/mousewheel.js"></script>
+    <script src="/js/ZeroClipboard.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/draggabilly/1.2.0/draggabilly.pkgd.min.js"></script>
     <script>
       var host = window.location.hostname;
       // var host = '192.168.1.2';
       // var host = '192.168.1.4';
       // var host = '10.100.101.74';
+
     	var ws_vidpath = 'ws://' + host + ':8081';
       var ws_audpath = 'ws://' + host + ':8082';
 
-      var VideoPlayer = new H264Player();
-      var canvas = VideoPlayer.canvas;
+      var videoPlayer = new H264Player();
+      var audioPlayer = new AudioPlayerMSE('audio/aac');
+      // var audioPlayer = new AudioPlayerContext('audio/aac');
+      // var audioPlayer = new AudioPlayerURL('audio/aac');
+      // var audioPlayer = new AudioPlayerJS('audio/mpeg');
+
+      var canvas = videoPlayer.canvas;
       var old_canvas = document.getElementById('canvas');
       old_canvas.parentNode.replaceChild(canvas, old_canvas);
-      var vid = new ws_client(ws_vidpath,
-        function(data){
-          VideoPlayer.decodeRaw(new Uint8Array(data));
-        },
-        function(){
-          window.ws = vid.ws;
-        }
-      );
+      var vid = new ws_client(ws_vidpath,function(data){
+        videoPlayer.play(data);
+      },function(){
+        window.ws = vid.ws;
+      });
 
-      var buff = [], src = '';
-      var buffer_counter = 0, a_counter = 0;
-      var audio_s_length = 10, buffer_length = 10;
-      var audios = [];
-      for(var i = 0; i < audio_s_length; i++){
-        var a = new Audio();
-        a.autoplay = true;
-        a.defaultPlaybackRate = 1;
-        a.normalize();
-        audios.push(a);
-      }
-      var audio = audios[0];
-
-      // var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      // var source = audioCtx.createBufferSource();
-      // var _buffer = (new Uint8Array()).buffer;
-      // var _appendBuffer = function(buffer) {
-      //   var tmp = new Uint8Array(_buffer.byteLength + buffer.byteLength);
-      //   tmp.set(new Uint8Array(_buffer), 0);
-      //   tmp.set(new Uint8Array(buffer), _buffer.byteLength);
-      //   _buffer = tmp.buffer;
-      // };
-      var aud = new ws_client(ws_audpath,
-        function(data){
-          // FormatReader.PushData(data);
-          buff.push(new Uint8Array(data));
-          // _appendBuffer(data);
-          if(buffer_counter == buffer_length){
-            buffer_counter = 0;
-            audio.muted = true;
-            audio = audios[a_counter];
-            URL.revokeObjectURL(src);
-            src = URL.createObjectURL(new Blob(buff, {type:'audio/mpeg'}))
-            audio.src = src;
-            audio.muted = false;
-            buff = [];
-            a_counter++;
-            if(a_counter >= audio_s_length)
-              a_counter = 0;
-
-            // audioCtx.decodeAudioData(_buffer, function(buffer) {
-            //   source = audioCtx.createBufferSource();
-            //   source.buffer = buffer;
-            //   source.connect(audioCtx.destination);
-            //   source.start(0);
-            // },
-            // function(e){"Error with decoding audio data", e});
-            // _buffer = (new Uint8Array()).buffer;
-          }
-          buffer_counter++;
-        },
-        function(){
-          // var AudioPlayer = new PCMAudioPlayer();
-          // window.FormatReader = new AudioFormatReader('audio/mpeg',
-          //   function(){
-          //     console.log("Reader error: Decoding failed.");
-          //   },
-          //   function(){
-          //     while (FormatReader.SamplesAvailable())
-          //       AudioPlayer.PushBuffer(FormatReader.PopSamples());
-          //   }
-          // );
-        }
-      );
+      var aud = new ws_client(ws_audpath, function(data){
+        audioPlayer.play(data);
+      });
 
       function ws_client(ws_path, onmessage, onopen){
         var self = this;
@@ -162,23 +94,9 @@
             else {
               var data = JSON.parse(msg.data);
               console.log(data);
-              if(data.width && data.height){
-                canvas.style.width = data.width + 'px';
-                canvas.style.height = data.height + 'px';
-                canvas.width = data.width;
-                canvas.height = data.height;
-                if(data.platform == 'android'){
-                  canvas.android = true;
-                  document.getElementById('controls').style.display = 'block';
-                  setOrientation(data.orientation);
-                  canvas.style.cursor = "pointer";
-                }
-                else{
-
-                }
-              }
-              else if(data.status == 'orientation')
-                setOrientation(data.value);
+              if(data.platform) initPlatform(data);
+              else if(data.status == 'orientation') setOrientation(data.value);
+              else if(data.status == 'clip') console.log('clip', data);
             }
           }
           ws.onclose = function(){
@@ -190,30 +108,25 @@
         connect();
       }
 
+      function initPlatform(data){
+        window.platform = data.platform;
+        canvas.style.width = data.width + 'px';
+        canvas.style.height = data.height + 'px';
+        canvas.width = data.width;
+        canvas.height = data.height;
+        canvas.focus();
+        if(data.platform == 'android'){
+          canvas.android = true;
+          document.getElementById('controls').style.display = 'block';
+          setOrientation(data.orientation);
+          canvas.style.cursor = "pointer";
+        }
+      }
+
       initInteractions();
-
-      window.angle = 0;
-      function setOrientation(value){
-        switch(value){
-          case 0: angle = 0;break;
-          case 1: angle = -90;break;
-          case 2: angle = -180;break;
-          case 3: angle = 90;break;
-        }
-        canvas.style.transform = "rotate(" + angle.toString() + "deg)";
-      }
-
-      function goFS(){
-        if (canvas.requestFullscreen) {
-          canvas.requestFullscreen();
-        } else if (canvas.msRequestFullscreen) {
-          canvas.msRequestFullscreen();
-        } else if (canvas.mozRequestFullScreen) {
-          canvas.mozRequestFullScreen();
-        } else if (canvas.webkitRequestFullscreen) {
-          canvas.webkitRequestFullscreen();
-        }
-      }
+      // var draggie = new Draggabilly(document.getElementById('cockpit'), {
+      //   containment: 'body'
+      // });
     </script>
 </body>
 </html>

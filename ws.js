@@ -1,12 +1,12 @@
 var log = console.log;
 var fs = require('fs');
-var ffmpeg_scr, ffmpeg_aud, interactions, os;
+var ffmpeg_scr, ffmpeg_aud, interactions, platform;
 if(/^win/.test(process.platform)){
-  os = 'win';
+  platform = 'win';
   interactions = require("./win_interactions.js");
 }
 else if(/^darwin/.test(process.platform)){
-  os = 'mac';
+  platform = 'mac';
   interactions = require("./mac_interactions.js");
 }
 else{
@@ -14,6 +14,7 @@ else{
   return
 }
 
+var clip = require("copy-paste");
 var WebSocketServer = require('ws').Server;
 var childProcess = require("child_process");
 var sjc = require('./strip-json-comments.js');
@@ -23,10 +24,11 @@ var wss_aud = new WebSocketServer({port:8082});
 
 wss_scr.on('connection', function connection(ws) {
   interactions.getScreenBounds(function(data){
-    ws.send(JSON.stringify(data));
+    data.platform = platform;
+    ws_send_json(ws, data);
   })
   ws.on('message', function(data){
-    sendEvent(data);
+    sendEvent(data, ws);
   });
   if(ffmpeg_scr && ffmpeg_scr.kill) ffmpeg_scr.kill();
   ffmpeg_scr = new ffmpeg('scr', ws);
@@ -39,7 +41,7 @@ wss_aud.on('connection', function connection(ws) {
 
 function ffmpeg(type, ws){
   try{
-    var args = JSON.parse(sjc(fs.readFileSync('./ffmpeg.json', 'utf8')))[os][type];
+    var args = JSON.parse(sjc(fs.readFileSync('./ffmpeg.json', 'utf8')))[platform][type];
     // log(type, args.join(' '));
     var encoder = childProcess.spawn('./ffmpeg', args);
     log('starting encoder', type);
@@ -68,11 +70,24 @@ function ffmpeg(type, ws){
   catch(e){log(e);}
 }
 
-function sendEvent(data){
+function sendEvent(data, ws){
   try{
-    interactions.sendEvent(JSON.parse(data));
+    var json = JSON.parse(data);
+    if(json.constructor === Array)
+      interactions.sendEvent(json);
+    else if(json.action == 'set_clip')
+      clip.copy(json.data);
+    else if(json.action == 'get_clip')
+      clip.paste(function(e, text){
+        ws_send_json(ws, {status: 'clip', value: text});
+      });
   }
   catch (e){log('invalid input');}
+}
+
+function ws_send_json(ws, data){
+  if(ws.readyState == 1)
+    ws.send(JSON.stringify(data));
 }
 
 log('server started');

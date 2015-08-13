@@ -1,3 +1,15 @@
+
+window.angle = 0;
+function setOrientation(value){
+  switch(value){
+    case 0: angle = 0;break;
+    case 1: angle = -90;break;
+    case 2: angle = -180;break;
+    case 3: angle = 90;break;
+  }
+  canvas.style.transform = "rotate(" + angle.toString() + "deg)";
+}
+
 function initInteractions(){
 	canvas.tabIndex = 1000;
   canvas.addEventListener("mousedown", doMouseDown, false);
@@ -6,6 +18,7 @@ function initInteractions(){
   canvas.addEventListener("keydown", doKeyDown, false);
   canvas.addEventListener("keyup", doKeyUp, false);
   canvas.addEventListener("mouseleave", doMouseLeave, false);
+  // canvas.contenteditable = true;
   // canvas.addEventListener("WheelEvent", doMouseWheel, false);
   // canvas.addEventListener('mousewheel', doMouseWheel, false);
 
@@ -53,8 +66,8 @@ function initInteractions(){
     if(canvas.android && mouseDown != 1)
       return;
     sendMouse(2, e);
-    e.cancelBubble = true;
-    if( e.stopPropagation ) e.stopPropagation();
+    // e.cancelBubble = true;
+    // if( e.stopPropagation ) e.stopPropagation();
   }
   var newX = 0;
   var newY = 0;
@@ -95,13 +108,14 @@ function initInteractions(){
   function doMouseWheel(e){
     if(canvas.android)
       return;
-    // if(scroll) {
-      var x = Math.round(e.deltaX);
-      var y = -Math.round(e.deltaY);
+    var x = Math.round(e.deltaX);
+    var y = -Math.round(e.deltaY);
+
+    if(window.platform == 'win') {
+      send([x/2,y/2]);
+    }
+    else
       send([x,y]);
-      // setTimeout(function(){scroll = true;},400);
-    // }
-    // scroll = false;
     e.cancelBubble = true;
     if( e.stopPropagation ) e.stopPropagation();
     e.preventDefault();
@@ -143,5 +157,17 @@ function initInteractions(){
   function send(e){
     // console.log(e);
     ws.send(JSON.stringify(e));
+  }
+}
+
+function goFS(){
+  if (canvas.requestFullscreen) {
+    canvas.requestFullscreen();
+  } else if (canvas.msRequestFullscreen) {
+    canvas.msRequestFullscreen();
+  } else if (canvas.mozRequestFullScreen) {
+    canvas.mozRequestFullScreen();
+  } else if (canvas.webkitRequestFullscreen) {
+    canvas.webkitRequestFullscreen();
   }
 }
