@@ -72,10 +72,10 @@
       // var audioPlayer = new AudioPlayerContext('audio/aac');
       // var audioPlayer = new AudioPlayerURL('audio/aac');
       // var audioPlayer = new AudioPlayerJS('audio/mpeg');
-      // var audioPlayer = new AudioPlayerMSE('audio/aac');
-      // var aud = new ws_client(ws_audpath, function(data){
-      //   audioPlayer.play(data);
-      // });
+      var audioPlayer = new AudioPlayerMSE('audio/aac');
+      var aud = new ws_client(ws_audpath, function(data){
+        audioPlayer.play(data);
+      });
 
       function ws_client(ws_path, onmessage, onopen){
         var self = this;
