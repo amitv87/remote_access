@@ -1,3 +1,31 @@
+var can = document.createElement('canvas')
+// $('body').prepend($(can));
+can.style.backgroundColor = "blue";
+var ctx = can.getContext("2d");
+function setCursor(data){
+  // console.log(data.offset, data.size, data.base64.length);
+  var dataUrl = "data:image/png;base64," + data.base64;
+  var img = document.createElement('img');
+  img.src = dataUrl;
+
+  can.width = data.size.Width;
+  can.height = data.size.Height;
+  can.style.width = data.size.Width + 'px';
+  can.style.height = data.size.Height + 'px';
+
+  ctx.shadowColor = "black";
+  ctx.shadowOffsetX = 1;
+  ctx.shadowOffsetY = 1;
+  ctx.shadowBlur = 3;
+  ctx.drawImage(img, 0,0);
+
+  var dataUrl = can.toDataURL('image/png')
+  var cursorStyle = 'url(' + dataUrl + ') ' + data.offset[0] + " " + data.offset[1] +', auto'; 
+  canvas.style.cursor = cursorStyle;
+  // setTimeout(function(){
+  //   canvas.style.cursor = cursorStyle;
+  // },10);
+}
 
 window.angle = 0;
 function setOrientation(value){

@@ -4,8 +4,13 @@ var fs = require('fs');
 var sjc = require('./strip-json-comments.js');
 var keyMap = JSON.parse(sjc(fs.readFileSync('./mac_kc.json', 'utf8')));
 
+
+var EventLoop = require('./EventLoop.js');
+var evtLoop = new EventLoop();
+evtLoop.start();
 var $ = require('NodObjC');
 $.framework('Cocoa');
+evtLoop.stop();
 
 var pool;
 
@@ -281,9 +286,35 @@ var getScreenBounds = function(callback){
         callback(screenBounds);
 }
 
+var _getCursorState = function(){
+    var cursor = $.NSCursor('currentSystemCursor');
+    var nsimage = cursor('image');
+    var nssize = nsimage('size');
+    var hotspot = cursor('hotSpot');
+    var cgImage = nsimage('CGImageForProposedRect', null, 'context', null, 'hints', null);
+    var imageRep = $.NSBitmapImageRep('alloc')('initWithCGImage', cgImage);
+    var png = imageRep('representationUsingType', $.NSPNGFileType, 'properties', null);
+    var base64 = png('base64EncodedStringWithOptions', 0).toString();
+    return {
+        size: {Width: nssize.width, Height: nssize.height},
+        offset: [hotspot.x, hotspot.y],
+        base64: base64
+    }
+}
+
+// setInterval(function(){
+//     console.log(_getCursorState());
+// }, 1000)
+
+var getCursorState = function(callback, force){//to be implemented
+    if(callback)
+        callback(_getCursorState());
+}
+
 module.exports = {
     sendEvent: sendEvent,
     getScreenBounds: getScreenBounds,
     screenBounds: screenBounds,
+    getCursorState: getCursorState,
     quit: quit
 }

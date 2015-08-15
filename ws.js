@@ -22,7 +22,9 @@ var sjc = require('./strip-json-comments.js');
 var wss_scr = new WebSocketServer({port:8081});
 var wss_aud = new WebSocketServer({port:8082});
 
+var force = 1;
 wss_scr.on('connection', function connection(ws) {
+  force = 1;
   interactions.getScreenBounds(function(data){
     data.platform = platform;
     ws_send_json(ws, data);
@@ -73,8 +75,10 @@ function ffmpeg(type, ws){
 function sendEvent(data, ws){
   try{
     var json = JSON.parse(data);
-    if(json.constructor === Array)
+    if(json.constructor === Array){
       interactions.sendEvent(json);
+      updateCursor(ws);
+    }
     else if(json.action == 'set_clip')
       clip.copy(json.data);
     else if(json.action == 'get_clip')
@@ -83,6 +87,15 @@ function sendEvent(data, ws){
       });
   }
   catch (e){log('invalid input');}
+}
+
+function updateCursor(ws){
+  setTimeout(function(){
+    interactions.getCursorState(function(value){
+      ws_send_json(ws, {status:'cursor', value:value});
+      force = 0;
+    },force)
+  }, 50);
 }
 
 function ws_send_json(ws, data){

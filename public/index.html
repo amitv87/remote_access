@@ -36,6 +36,7 @@
       </table>
     </div>
     <!-- <input type="button" value="hs" text="fs" onclick="goFS()"/> -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script src="/js/WebGLCanvas.js"></script>
     <script src="/js/Decoder.js"></script>
     <script src="/js/Player.js"></script>
@@ -47,11 +48,10 @@
     <script src="/js/interaction.js"></script>
     <script src="/js/mousewheel.js"></script>
     <script src="/js/ZeroClipboard.min.js"></script>
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/draggabilly/1.2.0/draggabilly.pkgd.min.js"></script>
     <script>
       var host = window.location.hostname;
-      // var host = '192.168.1.2';
+      var host = '192.168.1.2';
       // var host = '192.168.1.4';
       // var host = '10.100.101.74';
 
@@ -93,10 +93,10 @@
             }
             else {
               var data = JSON.parse(msg.data);
-              console.log(data);
               if(data.platform) initPlatform(data);
               else if(data.status == 'orientation') setOrientation(data.value);
-              else if(data.status == 'clip') console.log('clip', data);
+              else if(data.status == 'clip') console.log(data);
+              else if(data.status == 'cursor') setCursor(data.value);
             }
           }
           ws.onclose = function(){
@@ -109,6 +109,7 @@
       }
 
       function initPlatform(data){
+        console.log(data);
         window.platform = data.platform;
         canvas.style.width = data.width + 'px';
         canvas.style.height = data.height + 'px';

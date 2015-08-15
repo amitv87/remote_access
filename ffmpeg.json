@@ -3,7 +3,9 @@
         "scr": [
             "-loglevel", "error",
             "-re",
-            "-f", "avfoundation", "-capture_cursor", "1", "-framerate", "30", "-i", "1",   //mac avfoundation ffmpeg capturer
+            "-f", "avfoundation",
+            "-capture_cursor", "0",
+            "-framerate", "30", "-i", "1",   //mac avfoundation ffmpeg capturer
             "-pix_fmt", "yuv420p",
             "-r", "30",
             "-vcodec", "libx264",
