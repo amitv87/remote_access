@@ -1,16 +1,16 @@
 var log = console.log;
 var fs = require('fs');
 var ffmpeg_scr, ffmpeg_aud, interactions, platform;
-var CURSUR_JOB_INTERVAL = 200;
+var CURSOR_JOB_INTERVAL = 200;
 if(/^win/.test(process.platform)){
   platform = 'win';
   interactions = require("./win_interactions.js");
-  CURSUR_JOB_INTERVAL = 100;
+  CURSOR_JOB_INTERVAL = 100;
 }
 else if(/^darwin/.test(process.platform)){
   platform = 'mac';
   interactions = require("./mac_interactions.js");
-  CURSUR_JOB_INTERVAL = 200;
+  CURSOR_JOB_INTERVAL = 200;
 }
 else{
   console.log('platform not supported');
@@ -39,7 +39,7 @@ wss_scr.on('connection', function connection(ws) {
   force = 1;
   cursorJob = setInterval(function(){
     updateCursor(ws);
-  },CURSUR_JOB_INTERVAL);
+  },CURSOR_JOB_INTERVAL);
 });
 
 wss_aud.on('connection', function connection(ws) {
