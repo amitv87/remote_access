@@ -99,7 +99,6 @@ function sendEvent(data, ws){
 }
 
 function updateCursor(ws){
-  console.log('cursorJob');
   interactions.getCursorState(function(value){
     ws_send_json(ws, {status:'cursor', value:value});
     force = 0;
