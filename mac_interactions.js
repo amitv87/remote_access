@@ -286,8 +286,11 @@ var getScreenBounds = function(callback){
         callback(screenBounds);
 }
 
+var tempCursor = '';
 var _getCursorState = function(){
     var cursor = $.NSCursor('currentSystemCursor');
+    if(!cursor)
+        return false;
     var nsimage = cursor('image');
     var nssize = nsimage('size');
     var hotspot = cursor('hotSpot');
@@ -295,6 +298,10 @@ var _getCursorState = function(){
     var imageRep = $.NSBitmapImageRep('alloc')('initWithCGImage', cgImage);
     var png = imageRep('representationUsingType', $.NSPNGFileType, 'properties', null);
     var base64 = png('base64EncodedStringWithOptions', 0).toString();
+
+    if(base64 == tempCursor)
+        return false;
+    tempCursor = base64;
     return {
         size: {Width: nssize.width, Height: nssize.height},
         offset: [hotspot.x, hotspot.y],
@@ -306,9 +313,11 @@ var _getCursorState = function(){
 //     console.log(_getCursorState());
 // }, 1000)
 
-var getCursorState = function(callback, force){//to be implemented
-    if(callback)
-        callback(_getCursorState());
+var getCursorState = function(callback, force){
+    var result = _getCursorState();
+    if(callback && result){
+        callback(result);
+    }
 }
 
 module.exports = {

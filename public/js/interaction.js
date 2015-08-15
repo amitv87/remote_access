@@ -1,30 +1,37 @@
+var isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+// Opera 8.0+ (UA detection to detect Blink/v8-powered Opera)
+var isFirefox = typeof InstallTrigger !== 'undefined';   // Firefox 1.0+
+var isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
+// At least Safari 3+: "[object HTMLElementConstructor]"
+var isChrome = !!window.chrome && !isOpera;              // Chrome 1+
+var isIE = /*@cc_on!@*/false || !!document.documentMode; // At least IE6
+
 var can = document.createElement('canvas')
 // $('body').prepend($(can));
+can.style.float = 'left';
 can.style.backgroundColor = "blue";
+var img = document.createElement('img');
 var ctx = can.getContext("2d");
-function setCursor(data){
+img.onload = function() {
+  ctx.drawImage(this, 0,0);
+  var dataUrl = can.toDataURL('image/png');
+  var cursorStyle = 'url(' + dataUrl + ') ' + this.offset[0] + " " + this.offset[1] +', auto';
+  canvas.style.cursor = cursorStyle;
+};
+function setCursor(data, noRepeat){
   // console.log(data.offset, data.size, data.base64.length);
-  var dataUrl = "data:image/png;base64," + data.base64;
-  var img = document.createElement('img');
-  img.src = dataUrl;
-
   can.width = data.size.Width;
   can.height = data.size.Height;
   can.style.width = data.size.Width + 'px';
   can.style.height = data.size.Height + 'px';
-
-  ctx.shadowColor = "black";
-  ctx.shadowOffsetX = 1;
-  ctx.shadowOffsetY = 1;
-  ctx.shadowBlur = 3;
-  ctx.drawImage(img, 0,0);
-
-  var dataUrl = can.toDataURL('image/png')
-  var cursorStyle = 'url(' + dataUrl + ') ' + data.offset[0] + " " + data.offset[1] +', auto'; 
-  canvas.style.cursor = cursorStyle;
-  // setTimeout(function(){
-  //   canvas.style.cursor = cursorStyle;
-  // },10);
+  if(window.platform == 'win'){
+    ctx.shadowColor = "black";
+    ctx.shadowOffsetX = 1;
+    ctx.shadowOffsetY = 1;
+    ctx.shadowBlur = 1;
+  }
+  img.offset = data.offset;
+  img.src = "data:image/png;base64," + data.base64;;
 }
 
 window.angle = 0;

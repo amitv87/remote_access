@@ -36,19 +36,19 @@
       </table>
     </div>
     <!-- <input type="button" value="hs" text="fs" onclick="goFS()"/> -->
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="/js/jquery-2.1.4.min.js"></script>
+    <script src="/js/mpeg.js"></script>
+    <script src="/js/format_reader.js"></script>
+    <script src="/js/audio_player.js"></script>
+    <script src="/js/mousewheel.js"></script>
+    <script src="/js/draggabilly.1.2.0.pkgd.min.js"></script>
+
     <script src="/js/WebGLCanvas.js"></script>
     <script src="/js/Decoder.js"></script>
     <script src="/js/Player.js"></script>
     <script src="/js/video_player.js"></script>
-    <script src="/js/mpeg.js"></script>
-    <script src="/js/format_reader.js"></script>
-    <script src="/js/audio_player.js"></script>
     <script src="/js/audio_players.js"></script>
     <script src="/js/interaction.js"></script>
-    <script src="/js/mousewheel.js"></script>
-    <script src="/js/ZeroClipboard.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/draggabilly/1.2.0/draggabilly.pkgd.min.js"></script>
     <script>
       var host = window.location.hostname;
       // var host = '192.168.1.2';
@@ -59,10 +59,6 @@
       var ws_audpath = 'ws://' + host + ':8082';
 
       var videoPlayer = new H264Player();
-      var audioPlayer = new AudioPlayerMSE('audio/aac');
-      // var audioPlayer = new AudioPlayerContext('audio/aac');
-      // var audioPlayer = new AudioPlayerURL('audio/aac');
-      // var audioPlayer = new AudioPlayerJS('audio/mpeg');
 
       var canvas = videoPlayer.canvas;
       var old_canvas = document.getElementById('canvas');
@@ -73,9 +69,13 @@
         window.ws = vid.ws;
       });
 
-      var aud = new ws_client(ws_audpath, function(data){
-        audioPlayer.play(data);
-      });
+      // var audioPlayer = new AudioPlayerContext('audio/aac');
+      // var audioPlayer = new AudioPlayerURL('audio/aac');
+      // var audioPlayer = new AudioPlayerJS('audio/mpeg');
+      // var audioPlayer = new AudioPlayerMSE('audio/aac');
+      // var aud = new ws_client(ws_audpath, function(data){
+      //   audioPlayer.play(data);
+      // });
 
       function ws_client(ws_path, onmessage, onopen){
         var self = this;

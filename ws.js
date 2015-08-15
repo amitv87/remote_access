@@ -22,9 +22,8 @@ var sjc = require('./strip-json-comments.js');
 var wss_scr = new WebSocketServer({port:8081});
 var wss_aud = new WebSocketServer({port:8082});
 
-var force = 1;
+var force = 0, cursorJob = null;
 wss_scr.on('connection', function connection(ws) {
-  force = 1;
   interactions.getScreenBounds(function(data){
     data.platform = platform;
     ws_send_json(ws, data);
@@ -34,6 +33,10 @@ wss_scr.on('connection', function connection(ws) {
   });
   if(ffmpeg_scr && ffmpeg_scr.kill) ffmpeg_scr.kill();
   ffmpeg_scr = new ffmpeg('scr', ws);
+  force = 1;
+  cursorJob = setInterval(function(){
+    updateCursor(ws);
+  },200);
 });
 
 wss_aud.on('connection', function connection(ws) {
@@ -63,6 +66,10 @@ function ffmpeg(type, ws){
       encoder.kill();
       encoder = null;
       log('killed', type);
+      if(cursorJob && type == 'scr'){
+        clearInterval(cursorJob);
+        cursorJob = null;
+      }
     }
     this.kill = kill;
     ws.on('close', kill);
@@ -77,7 +84,6 @@ function sendEvent(data, ws){
     var json = JSON.parse(data);
     if(json.constructor === Array){
       interactions.sendEvent(json);
-      updateCursor(ws);
     }
     else if(json.action == 'set_clip')
       clip.copy(json.data);
@@ -90,12 +96,11 @@ function sendEvent(data, ws){
 }
 
 function updateCursor(ws){
-  setTimeout(function(){
-    interactions.getCursorState(function(value){
-      ws_send_json(ws, {status:'cursor', value:value});
-      force = 0;
-    },force)
-  }, 50);
+  console.log('cursorJob');
+  interactions.getCursorState(function(value){
+    ws_send_json(ws, {status:'cursor', value:value});
+    force = 0;
+  },force);
 }
 
 function ws_send_json(ws, data){
