@@ -147,7 +147,15 @@ function initInteractions(){
     var y = -Math.round(e.deltaY);
 
     if(window.platform == 'win') {
-      send([x/2.5,y/2.5]);
+      x = getWinScroll(x);
+      y = getWinScroll(y);
+      if(scroll){
+        scroll = false;
+        setTimeout(function(){
+          send([x,y]);
+          scroll = true;
+        },45)
+      }
     }
     else
       send([x,y]);
@@ -156,6 +164,19 @@ function initInteractions(){
     e.preventDefault();
     return false
   }
+
+  function getWinScroll(value){
+    ret = value;
+    var abs = Math.abs(value);
+    if(abs > 0)
+      ret = 4 * (value/abs);
+    return Math.round(ret);
+    // var ret = Math.pow(abs,1/3) * (value/(abs ? abs : 1));
+    // var ret_abs = Math.abs(ret);
+    // if(ret_abs < 10 && ret_abs > 1)
+    //   ret = 4 * (ret/ret_abs);
+  }
+
   function doTouchStart(e){
     console.log(e);
     e.cancelBubble = true;

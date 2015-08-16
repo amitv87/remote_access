@@ -71,7 +71,8 @@ var _getCursorState = edge.func({
       static int lastHandle = 0;
       public async Task<object> Invoke(dynamic obj)
       {
-        ci.cbSize = Marshal.SizeOf(ci);
+        if(ci.cbSize == 0)
+          ci.cbSize = Marshal.SizeOf(ci);
         GetCursorInfo(out ci);
         if(ci.hCursor.ToInt32() == lastHandle && obj == 0)
           return false;
