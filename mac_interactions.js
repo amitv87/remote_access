@@ -301,7 +301,7 @@ var _getCursorState = function(force){
     var png = imageRep('representationUsingType', $.NSPNGFileType, 'properties', null);
     var base64 = png('base64EncodedStringWithOptions', 0).toString();
 
-    if(base64 == tempCursor)
+    if(base64 == tempCursor && !force)
         return false;
     tempCursor = base64;
     return {
