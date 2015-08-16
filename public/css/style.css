@@ -26,7 +26,7 @@ td:hover{
 #cockpit{
   width: 100px;
   border-radius: 10px;
-  background-color: white;
+  background-color: #EBF0F3;
   box-shadow: 0px 0px 10px 1px #888888;
   position: absolute;
   z-index:9999;
