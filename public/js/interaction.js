@@ -210,10 +210,32 @@ function initInteractions(){
     return [xr, yr];
   }
 
-  function send(e){
+  window.send = function(e){
     // console.log(e);
     ws.send(JSON.stringify(e));
   }
+
+  window.clipbox = $('#clipbox');
+  window.getClip = function(){
+    send({action:'get_clip'});
+  }
+
+  window.setClip = function(){
+    send({action:'set_clip', value: clipbox.val()});
+    $('#clipbox').val('');
+  }
+
+  window.onClip = function(value){
+    clipbox.val(value);
+    clipbox.focus();
+    clipbox.select();
+  }
+
+  clipbox.click(function(e){
+    clipbox.focus();
+    clipbox.select();
+    return false;
+  });
 }
 
 function goFS(){

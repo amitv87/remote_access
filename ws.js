@@ -1,5 +1,4 @@
 var log = console.log;
-var fs = require('fs');
 var ffmpeg_scr, ffmpeg_aud, interactions, platform;
 var CURSOR_JOB_INTERVAL = 200;
 if(/^win/.test(process.platform)){
@@ -17,6 +16,7 @@ else{
   return
 }
 
+var fs = require('fs');
 var clip = require("copy-paste");
 var WebSocketServer = require('ws').Server;
 var childProcess = require("child_process");
@@ -89,7 +89,7 @@ function sendEvent(data, ws){
       interactions.sendEvent(json);
     }
     else if(json.action == 'set_clip')
-      clip.copy(json.data);
+      clip.copy(json.value);
     else if(json.action == 'get_clip')
       clip.paste(function(e, text){
         ws_send_json(ws, {status: 'clip', value: text});

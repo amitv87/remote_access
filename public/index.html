@@ -5,16 +5,15 @@
     <link rel="stylesheet" type="text/css" href="/css/style.css">
 </head>
 <body style="text-align:center;width:1005;height:100%">
-    <!-- <div id="cockpit">
-      <div id="bar"></div>
-      <button style="background-color:#a9db80">start</button>
-      <button style="background-color:#f2825b">stop</button>
-      <button style="background-color:#fceabb;">reconnect</button>
-      <hr>
-      <div style="font-size:13px;">clipboard</div>
-      <button style="background-color:#a7c7dc">set</button>
-      <button style="background-color:#a7c7dc;margin-bottom:10px;">get</button>
-    </div> -->
+    <div id="cockpit" style="display:none;">
+      <div id="bar">clipboard</div>
+      <!-- <button style="background-color:#a9db80">start</button> -->
+      <!-- <button style="background-color:#f2825b">stop</button> -->
+      <!-- <button style="background-color:#fceabb;">reconnect</button> -->
+      <textarea type="text" id="clipbox" style="width:90%;margin-top:15px;resize:none;" row="2"></textarea>
+      <button style="background-color:#a7c7dc" onclick="setClip();">set</button>
+      <button style="background-color:#a7c7dc;margin-bottom:10px;" onclick="getClip();">get</button>
+    </div>
     <div id="conatiner">
       <canvas id="canvas"></canvas>
     </div>
@@ -95,7 +94,7 @@
               var data = JSON.parse(msg.data);
               if(data.platform) initPlatform(data);
               else if(data.status == 'orientation') setOrientation(data.value);
-              else if(data.status == 'clip') console.log(data);
+              else if(data.status == 'clip') onClip(data.value);
               else if(data.status == 'cursor') setCursor(data.value);
             }
           }
@@ -110,6 +109,14 @@
 
       function initPlatform(data){
         console.log(data);
+        if(!window.platform){
+          var cockpit = document.getElementById('cockpit');
+          cockpit.style.display = 'block';
+          cockpit.tabIndex = 999;
+          var draggie = new Draggabilly(cockpit, {
+            containment: 'body'
+          });
+        }
         window.platform = data.platform;
         canvas.style.width = data.width + 'px';
         canvas.style.height = data.height + 'px';
@@ -125,9 +132,6 @@
       }
 
       initInteractions();
-      // var draggie = new Draggabilly(document.getElementById('cockpit'), {
-      //   containment: 'body'
-      // });
     </script>
 </body>
 </html>
