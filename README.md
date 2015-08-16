@@ -1,4 +1,4 @@
-### Remote control your mac / windows from your browser in realtime with full interaction and audio support
+### Remote control your mac / windows from your browser in realtime with full interaction (including dirty clipboard support) and audio support
 
 Setup
 ---
@@ -48,5 +48,4 @@ Notes
 - ffmpeg.json is read in an ugly fashion, to fast switch ffmpeg flags
 
 ### Known bugs
-- mouse double click is broken on mac
-- choppy audio
+- choppy audio (with audio context or data url)
