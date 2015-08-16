@@ -147,7 +147,7 @@ function initInteractions(){
     var y = -Math.round(e.deltaY);
 
     if(window.platform == 'win') {
-      send([x/2,y/2]);
+      send([x/2.5,y/2.5]);
     }
     else
       send([x,y]);
