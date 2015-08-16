@@ -5,14 +5,16 @@
     <link rel="stylesheet" type="text/css" href="/css/style.css">
 </head>
 <body style="text-align:center;width:1005;height:100%">
-    <div id="cockpit" style="display:none;">
+    <div id="cockpit" style="display:none;" title="double click to open controls">
       <div id="bar">clipboard</div>
       <!-- <button style="background-color:#a9db80">start</button> -->
       <!-- <button style="background-color:#f2825b">stop</button> -->
       <!-- <button style="background-color:#fceabb;">reconnect</button> -->
-      <textarea type="text" id="clipbox" style="width:90%;margin-top:15px;resize:none;" row="2"></textarea>
-      <button style="background-color:#a7c7dc" onclick="setClip();">set</button>
-      <button style="background-color:#a7c7dc;margin-bottom:10px;" onclick="getClip();">get</button>
+      <div id="holder" style="display:none">
+        <textarea type="text" id="clipbox" style="width:90%;margin-top:15px;resize:none;" row="2"></textarea>
+        <button style="background-color:#a7c7dc" onclick="setClip();">set</button>
+        <button style="background-color:#a7c7dc;margin-bottom:10px;" onclick="getClip();">get</button>
+      </div>
     </div>
     <div id="conatiner">
       <canvas id="canvas"></canvas>
@@ -111,11 +113,14 @@
         console.log(data);
         if(!window.platform){
           var cockpit = document.getElementById('cockpit');
-          cockpit.style.display = 'block';
           cockpit.tabIndex = 999;
-          var draggie = new Draggabilly(cockpit, {
+          window.draggie = new Draggabilly(cockpit, {
             containment: 'body'
           });
+          document.getElementById('bar').ondblclick = function(){
+            $('#holder').slideToggle();
+          }
+          cockpit.style.display = 'block';
         }
         window.platform = data.platform;
         canvas.style.width = data.width + 'px';

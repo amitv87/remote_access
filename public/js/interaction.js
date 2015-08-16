@@ -1,11 +1,3 @@
-var isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
-// Opera 8.0+ (UA detection to detect Blink/v8-powered Opera)
-var isFirefox = typeof InstallTrigger !== 'undefined';   // Firefox 1.0+
-var isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
-// At least Safari 3+: "[object HTMLElementConstructor]"
-var isChrome = !!window.chrome && !isOpera;              // Chrome 1+
-var isIE = /*@cc_on!@*/false || !!document.documentMode; // At least IE6
-
 var can = document.createElement('canvas')
 // $('body').prepend($(can));
 can.style.float = 'left';
@@ -53,7 +45,7 @@ function initInteractions(){
   canvas.addEventListener("keydown", doKeyDown, false);
   canvas.addEventListener("keyup", doKeyUp, false);
   canvas.addEventListener("mouseleave", doMouseLeave, false);
-  // canvas.contenteditable = true;
+  canvas.contenteditable = true;
   // canvas.addEventListener("WheelEvent", doMouseWheel, false);
   // canvas.addEventListener('mousewheel', doMouseWheel, false);
 
