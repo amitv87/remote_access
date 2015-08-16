@@ -101,8 +101,8 @@ function sendEvent(data, ws){
 function updateCursor(ws){
   interactions.getCursorState(function(value){
     ws_send_json(ws, {status:'cursor', value:value});
-    force = 0;
   },force);
+  force = 0;
 }
 
 function ws_send_json(ws, data){

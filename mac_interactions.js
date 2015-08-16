@@ -278,6 +278,8 @@ var sendEvent = function(arr){
   }
   else if(arr.length == 2)
     Scroll(arr[1]/10, arr[0]/10);
+  else if(arr.length == 1)
+    DoubleClick();
 }
 
 var getScreenBounds = function(callback){
@@ -287,7 +289,7 @@ var getScreenBounds = function(callback){
 }
 
 var tempCursor = '';
-var _getCursorState = function(){
+var _getCursorState = function(force){
     var cursor = $.NSCursor('currentSystemCursor');
     if(!cursor)
         return false;
@@ -314,7 +316,7 @@ var _getCursorState = function(){
 // }, 1000)
 
 var getCursorState = function(callback, force){
-    var result = _getCursorState();
+    var result = _getCursorState(force);
     if(callback && result){
         callback(result);
     }

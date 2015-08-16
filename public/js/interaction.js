@@ -56,6 +56,19 @@ function initInteractions(){
   canvas.addEventListener("touchend", doTouchEnd, false);
   canvas.oncontextmenu = new Function("return false");
   
+  canvas.ondblclick = function(e){
+    if(window.platform == 'mac'){
+      var type = (e.button == 2 ? 4 : 1);
+      send([1]);
+    }
+
+    console.log('e');
+    e.cancelBubble = true;
+    if( e.stopPropagation ) e.stopPropagation();
+    e.preventDefault();
+    return false;
+  }
+
   function doKeyDown(e){
     sendKey(1,e.keyCode,e.altKey,e.shiftKey,e.ctrlKey);
     e.cancelBubble = true;
@@ -226,7 +239,7 @@ function initInteractions(){
   clipbox.click(function(e){
     clipbox.focus();
     clipbox.select();
-    return false;
+    // return false;
   });
 }
 

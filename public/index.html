@@ -5,7 +5,7 @@
     <link rel="stylesheet" type="text/css" href="/css/style.css">
 </head>
 <body style="text-align:center;width:1005;height:100%">
-    <div id="cockpit" style="display:none;" title="double click to open controls">
+    <div id="cockpit" style="display:none;" title="double click to open/close controls">
       <div id="bar">clipboard</div>
       <!-- <button style="background-color:#a9db80">start</button> -->
       <!-- <button style="background-color:#f2825b">stop</button> -->
@@ -37,12 +37,11 @@
       </table>
     </div>
     <!-- <input type="button" value="hs" text="fs" onclick="goFS()"/> -->
-    <script type="text/javascript" src="/js/jquery-2.1.4.min.js"></script>
+    <script src="/js/jquery-2.1.4.min.js"></script>
     <script src="/js/mpeg.js"></script>
     <script src="/js/format_reader.js"></script>
     <script src="/js/audio_player.js"></script>
     <script src="/js/mousewheel.js"></script>
-    <script src="/js/draggabilly.1.2.0.pkgd.min.js"></script>
 
     <script src="/js/WebGLCanvas.js"></script>
     <script src="/js/Decoder.js"></script>
@@ -50,6 +49,7 @@
     <script src="/js/video_player.js"></script>
     <script src="/js/audio_players.js"></script>
     <script src="/js/interaction.js"></script>
+    <script src="/js/interact-1.2.4.min.js"></script>
     <script>
       var host = window.location.hostname;
       // var host = '192.168.1.2';
@@ -112,15 +112,30 @@
       function initPlatform(data){
         console.log(data);
         if(!window.platform){
-          var cockpit = document.getElementById('cockpit');
-          cockpit.tabIndex = 999;
-          window.draggie = new Draggabilly(cockpit, {
-            containment: 'body'
-          });
+          window.cockpit = document.getElementById('cockpit');
           document.getElementById('bar').ondblclick = function(){
             $('#holder').slideToggle();
           }
           cockpit.style.display = 'block';
+
+          interact('#cockpit')
+          .draggable({
+            inertia: true,
+            restrict: {
+              restriction: "parent",
+              endOnly: true,
+              elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
+            },
+            onmove: function(event) {
+              var target = event.target,
+              x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
+              y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+              target.style.webkitTransform =
+              target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+              target.setAttribute('data-x', x);
+              target.setAttribute('data-y', y);
+            }
+          });
         }
         window.platform = data.platform;
         canvas.style.width = data.width + 'px';
