@@ -245,8 +245,8 @@ var key = function(kc){
     keyu(kc);
 }
 
-var screenBounds = {width:$.CGDisplayPixelsWide(), height:$.CGDisplayPixelsHigh()};
 init();
+var screenBounds = {width:$.CGDisplayPixelsWide(), height:$.CGDisplayPixelsHigh()};
 
 var down = false;
 var sendEvent = function(arr){
