@@ -1,10 +1,10 @@
 ﻿<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
+  <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" type="text/css" href="/css/style.css">
-</head>
-<body style="text-align:center;width:1005;height:100%">
+  </head>
+  <body style="text-align:center;width:100%;height:100%">
     <div id="cockpit" style="display:none;" title="double click to open/close controls">
       <div id="bar">clipboard</div>
       <!-- <button style="background-color:#a9db80">start</button> -->
@@ -60,7 +60,6 @@
       var ws_audpath = 'ws://' + host + ':8082';
 
       var videoPlayer = new H264Player();
-
       var canvas = videoPlayer.canvas;
       var old_canvas = document.getElementById('canvas');
       old_canvas.parentNode.replaceChild(canvas, old_canvas);
@@ -153,5 +152,5 @@
 
       initInteractions();
     </script>
-</body>
+  </body>
 </html>
