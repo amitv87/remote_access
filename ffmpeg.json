@@ -1,75 +1,51 @@
 {
+  "args_common":{
+    "scr":[
+      "-pix_fmt", "yuv420p",
+      "-r", "30",
+      "-vcodec", "libx264",
+      "-pass", "1",
+      "-coder", "0",
+      "-bf", "0",
+      "-wpredp", "0",
+      "-crf", "27",
+      "-x264opts", "sync-lookahead=0:rc-lookahead=0:sliced-threads:no-mbtree:no-cabac:no-8x8dct:trellis=0:no-deblock:no-scenecut:no-mixed-refs:scenecut=0",
+      "-partitions", "none",
+      "-f", "h264",
+      "pipe:1"
+    ],
+    "aud":[
+      "-f", "adts",
+      "-b:a", "128k",
+      "-ac","2",
+      "pipe:1"
+    ],
+    "loglevel":[
+      "-loglevel", "quiet"
+    ]
+  },
+  "args_platform" : {
     "mac":{
-        "scr": [
-            "-loglevel", "error",
-            "-re",
-            "-f", "avfoundation",
-            "-capture_cursor", "0",
-            "-framerate", "30", "-i", "1",   //mac avfoundation ffmpeg capturer
-            "-pix_fmt", "yuv420p",
-            "-r", "30",
-            "-vcodec", "libx264",
-            "-pass", "1",
-            "-coder", "0",
-            "-bf", "0",
-            "-wpredp", "0",
-            "-crf", "27",
-            "-x264opts", "sync-lookahead=0:rc-lookahead=0:sliced-threads:no-mbtree:no-cabac:no-8x8dct:trellis=0:no-deblock:no-scenecut:no-mixed-refs:scenecut=0",
-            "-partitions", "none",
-            "-threads", "4",
-            "-flags", "-global_header", "-map", "0",
-            "-flags", "-loop",
-            "-thread_type", "frame",
-            "-vbsf", "h264_mp4toannexb",
-            "-movflags", "+faststart",
-            "-an",
-            "-f", "h264",
-            "pipe:1"
-        ],
-        "aud": [
-            "-loglevel", "error",
-            "-re",
-            "-f", "avfoundation", "-i", "none:0",    // mac soundflower audio capturer
-            "-f", "adts",    //  aac stream
-            "-b:a", "128k",
-            "-ac","2",
-            "pipe:1"
-        ]
+      "scr":[
+        "-f", "avfoundation",
+        "-capture_cursor", "0",
+        "-framerate", "30",
+        "-i", "1"
+      ],
+      "aud":[
+        "-f", "avfoundation",
+        "-i", "none:0"
+      ]
     },
     "win":{
-        "scr": [
-            "-loglevel", "error",
-            "-re",
-            "-f", "dshow", "-i", "video=screen-capture-recorder",   //windows dshow creen-capture-recorder
-            // "-f", "gdigrab", "-i", "desktop",   //windows native capturer
-            "-pix_fmt", "yuv420p",
-            "-r", "30",
-            "-vcodec", "libx264",
-            "-pass", "1",
-            "-coder", "0",
-            "-bf", "0",
-            "-wpredp", "0",
-            "-crf", "27",
-            "-x264opts", "sync-lookahead=0:rc-lookahead=0:sliced-threads:no-mbtree:no-cabac:no-8x8dct:trellis=0:no-deblock:no-scenecut:no-mixed-refs:scenecut=0",
-            "-partitions", "none",
-            "-threads", "4",
-            "-flags", "-global_header", "-map", "0",
-            "-flags", "-loop",
-            "-thread_type", "frame",
-            "-vbsf", "h264_mp4toannexb",
-            "-movflags", "+faststart",
-            "-an",
-            "-f", "h264",
-            "pipe:1"
-        ],
-        "aud": [
-            "-loglevel", "error",
-            "-re",
-            "-f", "dshow", "-i", "audio=virtual-audio-capturer",    // windows dshow virtual-audio-capturer
-            "-f", "adts",    //  aac stream
-            "-b:a", "128k",
-            "-ac","2",
-            "pipe:1"
-        ]
+      "scr":[
+        "-f", "dshow",
+        "-i", "video=screen-capture-recorder"
+      ],
+      "aud":[
+        "-f", "dshow",
+        "-i", "audio=virtual-audio-capturer"
+      ]
     }
+  }
 }

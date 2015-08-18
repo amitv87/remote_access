@@ -1,6 +1,7 @@
 var log = console.log;
-var ffmpeg_scr, ffmpeg_aud, interactions, platform;
+var interactions, platform;
 var CURSOR_JOB_INTERVAL = 200;
+
 if(/^win/.test(process.platform)){
   platform = 'win';
   interactions = require("./win_interactions.js");
@@ -25,21 +26,21 @@ var sjc = require('./strip-json-comments.js');
 var wss_scr = new WebSocketServer({port:8081});
 var wss_aud = new WebSocketServer({port:8082});
 
-var force = 0, cursorJob = null;
+var force = 0, cursorJob = null, ffmpeg_scr = null, ffmpeg_aud = null;
 wss_scr.on('connection', function connection(ws) {
   interactions.getScreenBounds(function(data){
     data.platform = platform;
     ws_send_json(ws, data);
+    if(ffmpeg_scr && ffmpeg_scr.kill) ffmpeg_scr.kill();
+    ffmpeg_scr = new ffmpeg('scr', ws, ["-s", (data.width + "x" + data.height)]);
+    force = 1;
+    cursorJob = setInterval(function(){
+      updateCursor(ws);
+    },CURSOR_JOB_INTERVAL);
   })
   ws.on('message', function(data){
     sendEvent(data, ws);
   });
-  if(ffmpeg_scr && ffmpeg_scr.kill) ffmpeg_scr.kill();
-  ffmpeg_scr = new ffmpeg('scr', ws);
-  force = 1;
-  cursorJob = setInterval(function(){
-    updateCursor(ws);
-  },CURSOR_JOB_INTERVAL);
 });
 
 wss_aud.on('connection', function connection(ws) {
@@ -47,9 +48,10 @@ wss_aud.on('connection', function connection(ws) {
   ffmpeg_aud = new ffmpeg('aud', ws);
 });
 
-function ffmpeg(type, ws){
+function ffmpeg(type, ws, extras){
   try{
-    var args = JSON.parse(sjc(fs.readFileSync('./ffmpeg.json', 'utf8')))[platform][type];
+    var _args = JSON.parse(sjc(fs.readFileSync('./ffmpeg.json', 'utf8')));
+    var args = [].concat(_args["args_common"]["loglevel"],_args["args_platform"][platform][type], extras ? extras : [], _args["args_common"][type]);
     // log(type, args.join(' '));
     var encoder = childProcess.spawn('./ffmpeg', args);
     log('starting encoder', type);
@@ -67,7 +69,6 @@ function ffmpeg(type, ws){
       if(!encoder)
         return;
       encoder.kill();
-      encoder = null;
       log('killed', type);
       if(cursorJob && type == 'scr'){
         clearInterval(cursorJob);
