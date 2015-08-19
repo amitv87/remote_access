@@ -64,7 +64,7 @@ public class AudioServer extends WebSocketServer {
                 as = new AudioServer( port, new Draft_17() );
                 as.start();
             } catch (UnknownHostException e) {
-                e.printStackTrace();
+                Log.e(TAG, "", e);
             }
         }
     }
@@ -76,7 +76,7 @@ public class AudioServer extends WebSocketServer {
                 as.stop();
                 AudioCapturer.getInstance().stop();
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e(TAG, "", e);
             }
         }
         as = null;

@@ -13,6 +13,7 @@ import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import android.util.Log;
 
@@ -42,7 +43,7 @@ public class VideoServer extends WebSocketServer {
             json.put("api_level", android.os.Build.VERSION.SDK_INT);
             conn.send(json.toString());
         } catch (Exception e){
-            e.printStackTrace();
+            Log.e(TAG, "", e);
         }
         VideoCapturer.getInstance().stop();
         VideoCapturer.getInstance().start(conn);
@@ -55,21 +56,40 @@ public class VideoServer extends WebSocketServer {
 
     @Override
     public void onError( WebSocket conn, Exception ex ) {
-        ex.printStackTrace();
+        Log.e(TAG, "", ex);
     }
 
     @Override
     public void onMessage( WebSocket conn, String message ) {
         try{
-            JSONArray arr = new JSONArray(message);
-            if(arr.length() == 3)
-                MotionInputEvent.Dispatch(arr);
-            else if (arr.length() == 5)
-                KeyInputEvent.Dispatch(arr);
-            else if (arr.length() == 1)
-                KeyInputEvent.SendSpecial(arr);
+            Object object = new JSONTokener(message).nextValue();
+
+            if (object instanceof JSONArray){
+                JSONArray arr = (JSONArray)object;
+                if(arr.length() == 3)
+                    MotionInputEvent.Dispatch(arr);
+                else if (arr.length() == 5)
+                    KeyInputEvent.Dispatch(arr);
+                else if (arr.length() == 1)
+                    KeyInputEvent.SendSpecial(arr);
+            }
+            else if (object instanceof JSONObject){
+                JSONObject json = (JSONObject)object;
+                if(json.has("action")){
+                    String action = json.getString("action");
+                    if(action.equals("set_clip"))
+                        Global.setClip(json.getString("value"));
+                    else if(action.equals("get_clip")){
+                        JSONObject ret = new JSONObject();
+                        ret.put("status", "clip");
+                        ret.put("value", Global.getClip());
+                        conn.send(ret.toString());
+                    }
+                }
+            }
+                //you have an array
         } catch (Exception e){
-            e.printStackTrace();
+            Log.e(TAG, "",e);
         }
     }
 
@@ -91,7 +111,7 @@ public class VideoServer extends WebSocketServer {
                 vs = new VideoServer( port, new Draft_17() );
                 vs.start();
             } catch (UnknownHostException e) {
-                e.printStackTrace();
+                Log.e(TAG, "", e);
             }
         }
     }

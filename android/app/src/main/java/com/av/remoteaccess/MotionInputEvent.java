@@ -12,8 +12,6 @@ import android.os.SystemClock;
 public class MotionInputEvent extends IRotationWatcher.Stub {
     private static final String TAG = MotionInputEvent.class.getCanonicalName();
     private static MotionInputEvent mie;
-    static Handler mainHandler;
-    static IWindowManager iwm;
     
     @Override
     public void onRotationChanged(int rotation){
@@ -49,7 +47,7 @@ public class MotionInputEvent extends IRotationWatcher.Stub {
             case 0: ACTION = MotionEvent.ACTION_UP;break;
         }
         MotionEvent motionEvent = MotionEvent.obtain(
-                SystemClock.uptimeMillis(),SystemClock.uptimeMillis() + 50,
+                SystemClock.uptimeMillis(),SystemClock.uptimeMillis(),
                 ACTION,
                 x, y,
                 down != 0 ? 1 : 0,    //pressure

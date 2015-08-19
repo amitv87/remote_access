@@ -111,8 +111,8 @@ public class Global {
 //            app = (Application)getInitialApplication.invoke(null);
 //            Log.i(TAG, "app: " + app);
 
-//            cb = IClipboard.Stub.asInterface(ServiceManager.getService(Context.CLIPBOARD_SERVICE));
-//            cm = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            cb = IClipboard.Stub.asInterface(ServiceManager.getService(Context.CLIPBOARD_SERVICE));
+            cm = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
 //            ClipboardListener clipboardListener = new ClipboardListener();
 //            cm.addPrimaryClipChangedListener(clipboardListener);
 //            cm.setPrimaryClip(ClipData.newPlainText("text", "hello clipboard"));
@@ -126,16 +126,27 @@ public class Global {
         return  iwm.getRotation();
     }
     
-    static class ClipboardListener implements OnPrimaryClipChangedListener {
-        public void onPrimaryClipChanged() {
-            // TODO Auto-generated method stub
-            ClipData.Item clipItem = cb.getPrimaryClip(packageName).getItemAt(0);
-            if(clipItem.getText() != null){
-              Log.i(TAG, "clipboard text set: " + clipItem.getText());
-            }
-        }
+//    static class ClipboardListener implements OnPrimaryClipChangedListener {
+//        public void onPrimaryClipChanged() {
+//            ClipData.Item clipItem = cb.getPrimaryClip(packageName).getItemAt(0);
+//            if(clipItem.getText() != null){
+//              Log.i(TAG, "clipboard text set: " + clipItem.getText());
+//            }
+//        }
+//    }
+
+    public static String getClip(){
+        ClipData.Item clipItem = cb.getPrimaryClip(packageName).getItemAt(0);
+        if(clipItem.getText() != null)
+            return clipItem.getText().toString();
+        else
+            return "";
     }
-    
+
+    public static void setClip(String text){
+        cm.setPrimaryClip(ClipData.newPlainText("text", text));
+    }
+
     public static void getIPAddress() {
         try {
             List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
