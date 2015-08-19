@@ -51,7 +51,12 @@ wss_aud.on('connection', function connection(ws) {
 function ffmpeg(type, ws, extras){
   try{
     var _args = JSON.parse(sjc(fs.readFileSync('./ffmpeg.json', 'utf8')));
-    var args = [].concat(_args["args_common"]["loglevel"],_args["args_platform"][platform][type], extras ? extras : [], _args["args_common"][type]);
+    var args = [].concat(
+      _args["args_common"]["loglevel"],
+      _args["args_platform"][platform][type],
+      extras ? extras : [],
+      _args["args_common"][type]
+    );
     // log(type, args.join(' '));
     var encoder = childProcess.spawn('./ffmpeg', args);
     log('starting encoder', type);

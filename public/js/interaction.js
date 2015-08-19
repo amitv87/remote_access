@@ -61,8 +61,6 @@ function initInteractions(){
       var type = (e.button == 2 ? 4 : 1);
       send([1]);
     }
-
-    console.log('e');
     e.cancelBubble = true;
     if( e.stopPropagation ) e.stopPropagation();
     e.preventDefault();
