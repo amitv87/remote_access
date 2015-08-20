@@ -9,6 +9,6 @@ if [ "$ACTION" == "build" ]; then
   ./gradlew $MODE build
 fi
 
-adb install -r app/build/outputs/apk/app-debug.apk
+adb install -r app/build/outputs/apk/*-debug.apk
 adb push _run.sh /data/local/tmp/
 adb shell chmod 777 /data/local/tmp/_run.sh
