@@ -11,25 +11,11 @@ canvas{
   transition: all 0.5s;
   outline:none;
 }
-td{
-  text-align: center;
-  cursor: pointer;
-  padding: 8px;
-  font-size: 18px;
-}
-td:hover{
-  background-color: black;
-  color: white;
-  transition: all 0.5s ease;
-  -webkit-transition: all 0.5s;
-}
-#cockpit{
+.draggy {
   width: 100px;
   border-radius: 10px;
-  background-color: #EBF0F3;
+  background-color: rgba(0, 0, 0, 0.4);
   box-shadow: 0px 0px 10px 1px #888888;
-  right:10%;
-  top:20%;
   position: absolute;
   z-index:9999;
   overflow: hidden;
@@ -40,27 +26,60 @@ td:hover{
   -ms-user-select: none;
   user-select: none;
 }
+.draggy .bar{
+  cursor: move;
+  padding: 10px;
+  font: normal normal normal normal 11px/normal '.HelveticaNeueDeskInterface-Regular';
+  font-size: 14px;
+  background: #258dc8;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: white;
+  -webkit-transition: all 0.5s;
+  transition: all 0.5s;
+}
+.draggy .bar:hover{
+  box-shadow:0 0px 5px 1px grey;
+  /*font-size: 18px;*/
+}
+.draggy .holder{
+  /*display:none;*/
+  padding-top:5px;
+  padding-bottom:5px;
+  padding-left: 10%;
+  padding-right: 10%;
+}
+#clipboard{
+  right:10%;
+  top:50%;
+}
+#rotation{
+  right:10%;
+  top:20%;
+}
+#controls{
+  left:10%;
+  top:20%;
+}
 button{
-  width:80%;
+  width:100%;
+  background-color: #a7c7dc;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: white;
   padding:10px;
-  margin-top:10%;
+  margin-top:5px;
+  margin-bottom:5px;
   font-size: 12px;
   border-radius:7px;
   border:0;
   cursor: pointer;
   outline:none;
+  -webkit-transition: all 0.2s;
+  transition: all 0.2s;
 }
-
 button:active {
   box-shadow:0 0px 5px 1px black!important;
 }
-
 button:hover{
   box-shadow:0 0px 5px 1px grey;
-}
-#bar{
-  cursor: move;
-  padding: 10px;
-  background: #258dc8;
-  color: white;
+  /*font-size: 18px;*/
 }

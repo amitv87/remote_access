@@ -48,7 +48,7 @@ public class VideoCapturer {
                     Log.i(TAG, "encoderInputFormat: " + encoderInputFormat.toString());
                     final Rect layerStackRect = new Rect(0, 0, Global.dev_width, Global.dev_height);
                     final Rect displayRect = new Rect(0, 0, width, height);
-                    int rotation = Global.getRotation();
+                    int rotation = RotationManager.getRotation();
 
                     final MediaCodec encoder = MediaCodec.createEncoderByType(encoderInputFormat.getString(MediaFormat.KEY_MIME));
                     encoder.configure(encoderInputFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
@@ -69,7 +69,7 @@ public class VideoCapturer {
                                     Reflection.openTransaction.invoke(null, new Object[0]);
                                     Reflection.setDisplayProjection.invoke(null, iBinder, rotation, getRect(layerStackRect, rotation), getRect(displayRect, rotation));
                                     Reflection.closeTransaction.invoke(null, new Object[0]);
-                                    ws.send("{\"status\":\"orientation\",\"value\":" + rotation + "}");
+                                    ws.send("{\"status\":\"orientation\",\"value\":" + RotationManager.getRotationAngle(rotation) + "}");
                                 }
                             } catch (Exception e) {
                                 Log.i(TAG, e.getMessage(), e);

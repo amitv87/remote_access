@@ -11,12 +11,17 @@ import android.view.KeyEvent;
 
 public class KeyInputEvent {
     private static String TAG = KeyInputEvent.class.getCanonicalName();
-    private static HashMap<String, Integer> actionMap;
-    private static HashMap<Integer, Integer> specialKeyMap;
-    static IWindowManager iwm;
-    
-    public static void init() {
-        iwm = Global.iwm;
+    private HashMap<String, Integer> actionMap;
+    private HashMap<Integer, Integer> specialKeyMap;
+    private int deviceId = KeyCharacterMap.VIRTUAL_KEYBOARD;
+
+    private static KeyInputEvent kv;
+    public static void init(){
+        if(kv == null)
+            kv = new KeyInputEvent();
+    }
+
+    private KeyInputEvent() {
         actionMap = new HashMap<String, Integer>();
         actionMap.put("home", KeyEvent.KEYCODE_HOME);
         actionMap.put("menu", KeyEvent.KEYCODE_MENU);
@@ -24,6 +29,9 @@ public class KeyInputEvent {
         actionMap.put("back", KeyEvent.KEYCODE_BACK);
         actionMap.put("recentapps", KeyEvent.KEYCODE_APP_SWITCH);
         actionMap.put("power", KeyEvent.KEYCODE_POWER);
+        actionMap.put("vol+", KeyEvent.KEYCODE_VOLUME_UP);
+        actionMap.put("vol-", KeyEvent.KEYCODE_VOLUME_DOWN);
+        actionMap.put("vol0", KeyEvent.KEYCODE_VOLUME_MUTE);
 
         specialKeyMap = new HashMap<Integer, Integer>();
         specialKeyMap.put(32, KeyEvent.KEYCODE_SPACE);
@@ -39,7 +47,7 @@ public class KeyInputEvent {
         specialKeyMap.put(17, KeyEvent.KEYCODE_CTRL_LEFT);
         specialKeyMap.put(91, KeyEvent.KEYCODE_CTRL_LEFT);
         specialKeyMap.put(18, KeyEvent.KEYCODE_ALT_LEFT);
-        
+
         specialKeyMap.put(48, KeyEvent.KEYCODE_0);
         specialKeyMap.put(49, KeyEvent.KEYCODE_1);
         specialKeyMap.put(50, KeyEvent.KEYCODE_2);
@@ -50,7 +58,7 @@ public class KeyInputEvent {
         specialKeyMap.put(55, KeyEvent.KEYCODE_7);
         specialKeyMap.put(56, KeyEvent.KEYCODE_8);
         specialKeyMap.put(57, KeyEvent.KEYCODE_9);
-        
+
         specialKeyMap.put(188, KeyEvent.KEYCODE_COMMA);
         specialKeyMap.put(190, KeyEvent.KEYCODE_PERIOD);
         specialKeyMap.put(191, KeyEvent.KEYCODE_SLASH);
@@ -65,25 +73,26 @@ public class KeyInputEvent {
         specialKeyMap.put(186, KeyEvent.KEYCODE_SEMICOLON);
         specialKeyMap.put(187, KeyEvent.KEYCODE_EQUALS);
         specialKeyMap.put(189, KeyEvent.KEYCODE_MINUS);
+
+        try {
+            deviceId = KeyCharacterMap.class.getDeclaredField("VIRTUAL_KEYBOARD").getInt(KeyCharacterMap.class);
+        }
+        catch (Exception e) {
+            deviceId = 0;
+        }
     }
     
     public static void Dispatch(final JSONArray arr){
         try {
-          int keyCode = arr.getInt(1);
-          KeyEvent keyEvent = new KeyEvent(
-                  SystemClock.uptimeMillis(),
-                  SystemClock.uptimeMillis(),
-                  arr.getInt(0) == 1 ? KeyEvent.ACTION_DOWN : KeyEvent.ACTION_UP,
-                  specialKeyMap.containsKey(keyCode) ? specialKeyMap.get(keyCode) : keyCode - 36,
-                  0,
-                  (arr.getInt(2) == 1 ? KeyEvent.META_ALT_ON : 0) +
-                  (arr.getInt(3) == 1? KeyEvent.META_SHIFT_ON : 0) +
-                  (arr.getInt(4) == 1? KeyEvent.META_CTRL_ON : 0),
-                  KeyCharacterMap.VIRTUAL_KEYBOARD,
-                  0,
-                  0,
-                  InputDevice.SOURCE_KEYBOARD);
-          InputManager.DispatchEvent(keyEvent);
+            int keyCode = arr.getInt(1);
+            keyCode = kv.specialKeyMap.containsKey(keyCode) ? kv.specialKeyMap.get(keyCode) : keyCode - 36;
+            sendKey(
+                keyCode,
+                arr.getInt(0) == 1 ? KeyEvent.ACTION_DOWN : KeyEvent.ACTION_UP,
+                (arr.getInt(2) == 1 ? KeyEvent.META_ALT_ON : 0) +
+                (arr.getInt(3) == 1 ? KeyEvent.META_SHIFT_ON : 0) +
+                (arr.getInt(4) == 1 ? KeyEvent.META_CTRL_ON : 0)
+            );
       } catch (Exception e) {
           Log.i(TAG, "error in dispatching key event",e);
       }
@@ -92,43 +101,29 @@ public class KeyInputEvent {
     public static void SendSpecial(final JSONArray arr){
         try {
             String action = arr.optString(0);
-            Log.i(TAG,action);
-            if(actionMap.containsKey(action)){
-              int keyCode = actionMap.get(arr.getString(0));
-              
-              KeyEvent keyEvent = new KeyEvent(
-                      SystemClock.uptimeMillis(),
-                      SystemClock.uptimeMillis(),
-                      KeyEvent.ACTION_DOWN,
-                      keyCode,
-                      0,
-                      0,
-                      KeyCharacterMap.VIRTUAL_KEYBOARD,
-                      0,
-                      0,
-                      InputDevice.SOURCE_KEYBOARD);
-              InputManager.DispatchEvent(keyEvent);
-              keyEvent = new KeyEvent(
-                      SystemClock.uptimeMillis(),
-                      SystemClock.uptimeMillis(),
-                      KeyEvent.ACTION_UP,
-                      keyCode,
-                      0,
-                      0,
-                      KeyCharacterMap.VIRTUAL_KEYBOARD,
-                      0,
-                      0,
-                      InputDevice.SOURCE_KEYBOARD);
-              InputManager.DispatchEvent(keyEvent);
-            }
-            else if(action.equals("landscape")){
-                iwm.freezeRotation(3);
-            }
-            else if(action.equals("portrait")){
-                iwm.freezeRotation(0);
+            Log.i(TAG, action);
+            if(kv.actionMap.containsKey(action)){
+                int keyCode = kv.actionMap.get(arr.getString(0));
+                sendKey(keyCode, KeyEvent.ACTION_DOWN, 0);
+                sendKey(keyCode, KeyEvent.ACTION_UP, 0);
             }
         } catch (Exception e) {
             Log.i(TAG, "error in dispatching key event",e);
         }
+    }
+
+    private static void sendKey(int keyCode, int action, int meta){
+        KeyEvent keyEvent = new KeyEvent(
+            SystemClock.uptimeMillis(),
+            SystemClock.uptimeMillis(),
+            action,
+            keyCode,
+            0,
+            meta,
+            kv.deviceId,
+            0,
+            KeyEvent.FLAG_FROM_SYSTEM,
+            InputDevice.SOURCE_KEYBOARD);
+        InputManager.DispatchEvent(keyEvent);
     }
 }

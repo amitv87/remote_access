@@ -38,7 +38,7 @@ public class VideoServer extends WebSocketServer {
             json.put("height", Global.s_height);
             json.put("d_width", Global.dev_width);
             json.put("d_height", Global.dev_height);
-            json.put("orientation", Global.getRotation()); 
+            json.put("orientation", RotationManager.getRotationAngle());
             json.put("platform", "android");
             json.put("api_level", android.os.Build.VERSION.SDK_INT);
             conn.send(json.toString());
@@ -84,6 +84,9 @@ public class VideoServer extends WebSocketServer {
                         ret.put("status", "clip");
                         ret.put("value", Global.getClip());
                         conn.send(ret.toString());
+                    }
+                    else if(action.equals("set_orientation")){
+                        RotationManager.setOrientation(json.getInt("value"));
                     }
                 }
             }

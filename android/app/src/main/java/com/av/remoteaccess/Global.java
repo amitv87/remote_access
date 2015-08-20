@@ -121,11 +121,7 @@ public class Global {
             Log.i(TAG, e.getMessage(), e);
         }
     }
-    
-    public static int getRotation() {
-        return  iwm.getRotation();
-    }
-    
+
 //    static class ClipboardListener implements OnPrimaryClipChangedListener {
 //        public void onPrimaryClipChanged() {
 //            ClipData.Item clipItem = cb.getPrimaryClip(packageName).getItemAt(0);

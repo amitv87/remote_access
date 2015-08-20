@@ -8,8 +8,9 @@ public class Main {
         Looper.prepareMainLooper();
         try {
             Global.init();
-            Reflection.init();            
+            Reflection.init();
             InputManager.init();
+            RotationManager.init();
             VideoServer.init(8081);
             fi.iki.elonen.SimpleWebServer.main(new String[]{"-d","/data/data/com.av.remoteaccess/public/", "-q"});
         } catch (Exception e) {

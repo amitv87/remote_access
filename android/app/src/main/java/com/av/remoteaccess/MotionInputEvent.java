@@ -12,7 +12,7 @@ import android.os.SystemClock;
 public class MotionInputEvent extends IRotationWatcher.Stub {
     private static final String TAG = MotionInputEvent.class.getCanonicalName();
     private static MotionInputEvent mie;
-    
+
     @Override
     public void onRotationChanged(int rotation){
         Log.i("hello rotation", "hi " + rotation);
@@ -47,16 +47,16 @@ public class MotionInputEvent extends IRotationWatcher.Stub {
             case 0: ACTION = MotionEvent.ACTION_UP;break;
         }
         MotionEvent motionEvent = MotionEvent.obtain(
-                SystemClock.uptimeMillis(),SystemClock.uptimeMillis(),
-                ACTION,
-                x, y,
-                down != 0 ? 1 : 0,    //pressure
-                1,    //size
-                0,      //meta state
-                1,      //x precision
-                1,      //y precision
-                0,      //device id
-                1);     //edge flags
+            SystemClock.uptimeMillis(),SystemClock.uptimeMillis(),
+            ACTION,
+            x, y,
+            down != 0 ? 1 : 0,    //pressure
+            1,      //size
+            0,      //meta state
+            1,      //x precision
+            1,      //y precision
+            0,      //device id
+            0);     //edge flags
         motionEvent.setSource(InputDevice.SOURCE_TOUCHSCREEN);
         InputManager.DispatchEvent(motionEvent);
     }

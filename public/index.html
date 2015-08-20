@@ -5,37 +5,39 @@
     <link rel="stylesheet" type="text/css" href="/css/style.css">
   </head>
   <body style="text-align:center;">
-    <div id="cockpit" style="display:none;" title="double click to open/close controls">
-      <div id="bar">clipboard</div>
-      <!-- <button style="background-color:#a9db80">start</button> -->
-      <!-- <button style="background-color:#f2825b">stop</button> -->
-      <!-- <button style="background-color:#fceabb;">reconnect</button> -->
-      <div id="holder" style="display:none">
-        <textarea type="text" id="clipbox" style="outline:none;width:90%;margin-top:15px;resize:none;" row="2"></textarea>
-        <button style="background-color:#a7c7dc" onclick="setClip();">set</button>
-        <button style="background-color:#a7c7dc;margin-bottom:10px;" onclick="getClip();">get</button>
+    <div id="clipboard" class="draggy" style="display:none;">
+      <div class="bar">clipboard</div>
+      <div class="holder">
+        <textarea type="text" id="clipbox" style="background-color:rgba(0, 0, 0, 0.3);outline:none;width:90%;margin-top:5px;resize:none;color:white;" row="2"></textarea>
+        <button onclick="setClip();">set</button>
+        <button onclick="getClip();">get</button>
+      </div>
+    </div>
+    <div id="controls" class="draggy" style="display:none;">
+      <div class="bar">controls</div>
+      <div class="holder">
+        <button action="recentapps">apps</button>
+        <button action="menu">menu</button>
+        <button action="home">home</button>
+        <button action="search">search</button>
+        <button action="back">back</button>
+        <button action="vol+">vol +</button>
+        <button action="vol-">vol -</button>
+        <button action="power">power</button>
+      </div>
+    </div>
+    <div id="rotation" class="draggy" style="display:none;">
+      <div class="bar">rotate</div>
+      <div class="holder">
+        <button angle="90">left</button>
+        <button angle="270">right</button>
+        <button angle="0">reset</button>
       </div>
     </div>
     <div id="conatiner">
       <canvas id="canvas"></canvas>
     </div>
     <div style="clear:both">
-    <div id="controls" style="display:none;text-align:center;margin:0 auto;">
-      <table style="text-align:center;margin:0 auto;">
-        <tr>
-          <td onclick="sendSpecial('recentapps')">apps</td>
-          <td onclick="sendSpecial('menu')">menu</td>
-          <td onclick="sendSpecial('home')">home</td>
-          <td onclick="sendSpecial('search')">search</td>
-          <td onclick="sendSpecial('back')">back</td>
-        </tr>
-        <tr>
-          <td onclick="sendSpecial('landscape')">L</td>
-          <td onclick="sendSpecial('portrait')">P</td>
-          <td onclick="sendSpecial('power')">power</td>
-        </tr>
-      </table>
-    </div>
     <!-- <input type="button" value="hs" text="fs" onclick="goFS()"/> -->
     <script src="/js/jquery-2.1.4.min.js"></script>
     <script src="/js/mpeg.js"></script>
@@ -54,7 +56,6 @@
       var host = window.location.hostname;
       // var host = '192.168.1.2';
       // var host = '192.168.1.4';
-      // var host = '10.100.101.74';
 
     	var ws_vidpath = 'ws://' + host + ':8081';
       var ws_audpath = 'ws://' + host + ':8082';
@@ -111,30 +112,8 @@
       function initPlatform(data){
         console.log(data);
         if(!window.platform){
-          window.cockpit = document.getElementById('cockpit');
-          document.getElementById('bar').ondblclick = function(){
-            $('#holder').slideToggle();
-          }
-          cockpit.style.display = 'block';
-
-          interact('#cockpit')
-          .draggable({
-            inertia: true,
-            restrict: {
-              restriction: "parent",
-              endOnly: true,
-              // elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
-            },
-            onmove: function(event) {
-              var target = event.target,
-              x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
-              y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-              target.style.webkitTransform =
-              target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
-              target.setAttribute('data-x', x);
-              target.setAttribute('data-y', y);
-            }
-          });
+          $('#clipboard').show();
+          draggy('#clipboard');
         }
         window.platform = data.platform;
         canvas.style.width = data.width + 'px';
@@ -143,8 +122,11 @@
         canvas.height = data.height;
         canvas.focus();
         if(data.platform == 'android'){
+          $('#controls').show();
+          $('#rotation').show();
+          draggy('#controls');
+          draggy('#rotation');
           canvas.android = true;
-          document.getElementById('controls').style.display = 'block';
           setOrientation(data.orientation);
           canvas.style.cursor = "pointer";
         }

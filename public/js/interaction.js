@@ -1,4 +1,4 @@
-var can = document.createElement('canvas')
+var can = document.createElement('canvas');
 // $('body').prepend($(can));
 can.style.float = 'left';
 can.style.backgroundColor = "blue";
@@ -28,12 +28,14 @@ function setCursor(data, noRepeat){
 
 window.angle = 0;
 function setOrientation(value){
+  remoteAngle = value;
   switch(value){
     case 0: angle = 0;break;
-    case 1: angle = -90;break;
-    case 2: angle = -180;break;
-    case 3: angle = 90;break;
+    case 90: angle = -90;break;
+    case 180: angle = 180;break;
+    case 270: angle = 90;break;
   }
+
   canvas.style.transform = "rotate(" + angle.toString() + "deg)";
 }
 
@@ -46,41 +48,37 @@ function initInteractions(){
   canvas.addEventListener("keyup", doKeyUp, false);
   canvas.addEventListener("mouseleave", doMouseLeave, false);
   canvas.contenteditable = true;
-  // canvas.addEventListener("WheelEvent", doMouseWheel, false);
   // canvas.addEventListener('mousewheel', doMouseWheel, false);
 
   addWheelListener(canvas, doMouseWheel);
-  // $(canvas).mousewheel(fdoMouseWheel);
   canvas.addEventListener("touchstart", doTouchStart, false);
   canvas.addEventListener("touchmove", doTouchMove, false);
   canvas.addEventListener("touchend", doTouchEnd, false);
   canvas.oncontextmenu = new Function("return false");
-  
+
+  function supress(e){
+    e.cancelBubble = true;
+    if( e.stopPropagation ) e.stopPropagation();
+    e.preventDefault();
+    return false;
+  }
+
   canvas.ondblclick = function(e){
     if(window.platform == 'mac'){
       var type = (e.button == 2 ? 4 : 1);
       send([1]);
     }
-    e.cancelBubble = true;
-    if( e.stopPropagation ) e.stopPropagation();
-    e.preventDefault();
-    return false;
+    return supress(e);
   }
 
   function doKeyDown(e){
     sendKey(1,e.keyCode,e.altKey,e.shiftKey,e.ctrlKey);
-    e.cancelBubble = true;
-    if( e.stopPropagation ) e.stopPropagation();
-    e.preventDefault();
-    return false;
+    return supress(e);
   }
 
   function doKeyUp(e){
     sendKey(0,e.keyCode,e.altKey,e.shiftKey,e.ctrlKey);
-    e.cancelBubble = true;
-    if( e.stopPropagation ) e.stopPropagation();
-    e.preventDefault();
-    return false;
+    return supress(e);
   }
 
   var mouseDown = 0;
@@ -89,31 +87,24 @@ function initInteractions(){
     var type = (e.button == 2 ? 4 : 1);
     mouseDown = type;
     sendMouse(type, e);
-    e.cancelBubble = true;
-    if( e.stopPropagation ) e.stopPropagation();
+    canvas.focus();
+    return supress(e);
   }
   function doMouseUp(e){
     // e.target.onmousemove = null;
     var type = (e.button == 2 ? 3 : 0);
     mouseDown = type;
     sendMouse(type, e);
-    e.cancelBubble = true;
-    if( e.stopPropagation ) e.stopPropagation();
+    return supress(e);
   }
   function doMouseMove(e){
     if(canvas.android && mouseDown != 1)
       return;
     sendMouse(2, e);
-    // e.cancelBubble = true;
-    // if( e.stopPropagation ) e.stopPropagation();
   }
   var newX = 0;
   var newY = 0;
   function sendMouse(down, e){
-    // console.log(e.offsetX, e.layerX, e.offsetY, e.layerY)
-    // newX = (e.offsetX || e.layerX)/canvas.width;
-    // newX = newX + (newX * 0.0054);
-    // newY = (e.offsetY || e.layerY)/canvas.height;
     var cords = getcords(e);
     newX = cords[0] / canvas.width;
     newY = cords[1] / canvas.height;
@@ -128,12 +119,13 @@ function initInteractions(){
   }
 
   function getcords(event){
-      var canvasMouseX = event.clientX - (canvas.offsetLeft - window.pageXOffset);
-      var canvasMouseY = event.clientY - (canvas.offsetTop - window.pageYOffset);
-      return [canvasMouseX, canvasMouseY];
+    var rect = canvas.getBoundingClientRect();
+    var x = event.clientX - rect.left;
+    var y = event.clientY - rect.top;
+    return [x, y];
   }
   function sendMouseWS(down, x, y){
-    var cords = !canvas.android ? [x,y] : rotate(x, y);
+    var cords = [x,y];
     send([down,cords[0],cords[1]]);
   }
   function sendKey(down,key,alt,shift,ctrl){
@@ -162,10 +154,7 @@ function initInteractions(){
     }
     else
       send([x,y]);
-    e.cancelBubble = true;
-    if( e.stopPropagation ) e.stopPropagation();
-    e.preventDefault();
-    return false
+    return supress(e);
   }
 
   function getWinScroll(value){
@@ -197,20 +186,13 @@ function initInteractions(){
   }
 
   function rotate(x, y) {
-    var xm = 1/2,
-    ym = 1/2,
-    cos = Math.cos;
-    sin = Math.sin;
-
-    a = angle * Math.PI / 180;
-    // Convert to radians because that's what
-                           // JavaScript likes
-
-    // Subtract midpoints, so that midpoint is translated to origin
-    // and add it in the end again
-    xr = (x - xm) * cos(a) - (y - ym) * sin(a)   + xm;// * cos(a) - ym * sin(a);
-    yr = (x - xm) * sin(a) + (y - ym) * cos(a)   + ym;// * cos(a) - xm * sin(a);
-    return [xr, yr];
+    var xm = 1/2, ym = 1/2;
+    var a = angle * Math.PI / 180;
+    return [x,y];
+    return [
+      Math.cos(a) * (x-xm) - Math.sin(a) * (y-ym) + xm,
+      Math.sin(a) * (x-xm) + Math.cos(a) * (y-ym) + ym
+    ];
   }
 
   window.send = function(e){
@@ -239,6 +221,15 @@ function initInteractions(){
     clipbox.select();
     // return false;
   });
+
+  $('#controls button').click(function(){
+    var action = $(this).attr('action');
+    sendSpecial(action);
+  });
+
+  $('#rotation button').click(function(){
+    send({action:'set_orientation', value: Number($(this).attr('angle'))})
+  })
 }
 
 function goFS(){
@@ -251,4 +242,27 @@ function goFS(){
   } else if (canvas.webkitRequestFullscreen) {
     canvas.webkitRequestFullscreen();
   }
+}
+
+function draggy(selector) {
+  interact(selector).draggable({
+    inertia: true,
+    restrict: {
+      restriction: "parent",
+      endOnly: true,
+      elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
+    },
+    onmove: function(event) {
+      var target = event.target,
+      x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
+      y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+      target.style.webkitTransform =
+      target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+      target.setAttribute('data-x', x);
+      target.setAttribute('data-y', y);
+    }
+  });
+  $(selector + ' .bar').dblclick(function(){
+    $(selector + ' .holder').slideToggle();
+  });
 }
