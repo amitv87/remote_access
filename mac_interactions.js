@@ -251,10 +251,12 @@ var screenBounds = {width:$.CGDisplayPixelsWide(), height:$.CGDisplayPixelsHigh(
 var down = false;
 var sendEvent = function(arr){
   if(arr.length == 5){
+    var key = keyMap[arr[1]];
+    if(!key) return;
     if(arr[0] == 1)
-      keyd(keyMap[arr[1]]);
+      keyd(key);
     else if(arr[0] == 0)
-      keyu(keyMap[arr[1]]);
+      keyu(key);
   }
   else if(arr.length == 3){
     if(arr[0] == 1){
