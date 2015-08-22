@@ -2,9 +2,9 @@
 
 Setup
 ---
-Clone the repo and pull latest FFmpeg static build executable (http://ffmpeg.zeranoe.com/builds/)
+Clone the repo and pull latest FFmpeg static build executable (win: http://ffmpeg.zeranoe.com/builds/, mac: http://evermeet.cx/ffmpeg/)
 - npm install
-- nmp install http-server -g
+- npm install http-server -g
 - http-server
 - node ws.js
 
@@ -37,7 +37,7 @@ Client-side
 ---
 ### Playback
 - video - raw h264 decoder and webgl canvas playback https://github.com/mbebenita/Broadway
-- audio - native mpHTML5 audio api
+- audio - native HTML5 audio apis (mse, audio context, data url)
 
 ### Interactions
 Capture keyboard / mouse evets (html5 canvas) and send them over websockets.
