@@ -5,12 +5,14 @@
     <link rel="stylesheet" type="text/css" href="/css/style.css">
   </head>
   <body style="text-align:center;">
+    <canvas id="canvas"></canvas>
     <div id="clipboard" class="draggy" style="display:none;">
       <div class="bar">clipboard</div>
       <div class="holder">
         <textarea type="text" id="clipbox" style="background-color:rgba(0, 0, 0, 0.3);outline:none;width:90%;margin-top:5px;resize:none;color:white;" row="2"></textarea>
         <button onclick="setClip();">set</button>
         <button onclick="getClip();">get</button>
+        <button onclick="goFS()">full</button>
       </div>
     </div>
     <div id="controls" class="draggy" style="display:none;">
@@ -23,6 +25,10 @@
         <button action="back">back</button>
         <button action="vol+">vol +</button>
         <button action="vol-">vol -</button>
+        <button action="play">play</button>
+        <button action="pause">pause</button>
+        <button action="next">next</button>
+        <button action="prev">prev</button>
         <button action="power">power</button>
       </div>
     </div>
@@ -34,11 +40,7 @@
         <button angle="0">reset</button>
       </div>
     </div>
-    <div id="conatiner">
-      <canvas id="canvas"></canvas>
-    </div>
     <div style="clear:both">
-    <!-- <input type="button" value="hs" text="fs" onclick="goFS()"/> -->
     <script src="/js/jquery-2.1.4.min.js"></script>
     <script src="/js/mpeg.js"></script>
     <script src="/js/format_reader.js"></script>

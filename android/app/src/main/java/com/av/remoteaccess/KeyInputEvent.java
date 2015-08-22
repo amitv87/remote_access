@@ -32,6 +32,10 @@ public class KeyInputEvent {
         actionMap.put("vol+", KeyEvent.KEYCODE_VOLUME_UP);
         actionMap.put("vol-", KeyEvent.KEYCODE_VOLUME_DOWN);
         actionMap.put("vol0", KeyEvent.KEYCODE_VOLUME_MUTE);
+        actionMap.put("play", KeyEvent.KEYCODE_MEDIA_PLAY);
+        actionMap.put("pause", KeyEvent.KEYCODE_MEDIA_PAUSE);
+        actionMap.put("next", KeyEvent.KEYCODE_MEDIA_NEXT);
+        actionMap.put("prev", KeyEvent.KEYCODE_MEDIA_PREVIOUS);
 
         specialKeyMap = new HashMap<Integer, Integer>();
         specialKeyMap.put(32, KeyEvent.KEYCODE_SPACE);

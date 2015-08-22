@@ -232,15 +232,16 @@ function initInteractions(){
   })
 }
 
+var body = $('body')[0];
 function goFS(){
-  if (canvas.requestFullscreen) {
-    canvas.requestFullscreen();
-  } else if (canvas.msRequestFullscreen) {
-    canvas.msRequestFullscreen();
-  } else if (canvas.mozRequestFullScreen) {
-    canvas.mozRequestFullScreen();
-  } else if (canvas.webkitRequestFullscreen) {
-    canvas.webkitRequestFullscreen();
+  if (body.requestFullscreen) {
+    body.requestFullscreen();
+  } else if (body.msRequestFullscreen) {
+    body.msRequestFullscreen();
+  } else if (body.mozRequestFullScreen) {
+    body.mozRequestFullScreen();
+  } else if (body.webkitRequestFullscreen) {
+    body.webkitRequestFullscreen();
   }
 }
 
@@ -248,7 +249,7 @@ function draggy(selector) {
   interact(selector).draggable({
     inertia: true,
     restrict: {
-      restriction: "parent",
+      restriction: "html",
       endOnly: true,
       elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
     },
