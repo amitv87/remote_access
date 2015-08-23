@@ -28,7 +28,7 @@ public class AudioServer extends WebSocketServer {
     @Override
     public void onOpen( final WebSocket conn, ClientHandshake handshake ) {
         AudioCapturer.getInstance().stop();
-        AudioCapturer.getInstance().start(conn);
+        AudioCapturer.getInstance().start_mediarecord(conn);
     }
 
     @Override

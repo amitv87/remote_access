@@ -42,8 +42,8 @@ public class VideoCapturer {
                     MediaFormat encoderInputFormat = MediaFormat.createVideoFormat("video/avc", width, height);
                     encoderInputFormat.setInteger(MediaFormat.KEY_BIT_RATE, 2 * 1024 * 1024);
                     encoderInputFormat.setInteger(MediaFormat.KEY_FRAME_RATE, 30);
-                    encoderInputFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 1000);
-                    encoderInputFormat.setInteger(MediaFormat.KEY_REPEAT_PREVIOUS_FRAME_AFTER, 33333);
+                    encoderInputFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 1000000);
+//                    encoderInputFormat.setInteger(MediaFormat.KEY_REPEAT_PREVIOUS_FRAME_AFTER, 33333);
                     encoderInputFormat.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
                     Log.i(TAG, "encoderInputFormat: " + encoderInputFormat.toString());
                     final Rect layerStackRect = new Rect(0, 0, Global.dev_width, Global.dev_height);

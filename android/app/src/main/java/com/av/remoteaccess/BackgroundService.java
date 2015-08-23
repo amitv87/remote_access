@@ -27,4 +27,8 @@ public class BackgroundService extends Service {
         }
         return Service.START_STICKY;
     }
+    @Override
+    public void onDestroy(){
+        AudioServer.dispose();
+    }
 }
