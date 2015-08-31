@@ -8,7 +8,59 @@ function H264Player(){
   });
 
   this.canvas = p.canvas;
+  var parser = new nalParser(p);
+  this.play = function(buffer){
+    parser.parse(buffer);
+  };
+}
 
+function OpenH264Player(canvas){
+  var _this = this;
+  this.renderer = new WebGLRenderer();
+  // this.renderer = new RGBRenderer();
+  this.decoder = new Worker("/js/openh264_worker.js");
+  this.decoder.postMessage({
+      rgb: this.renderer.is_rgba()
+  });
+  this.canvas = canvas;
+  var width, height;
+  this.decoder.onmessage = function (ev) {
+    if (!_this.renderer_initialized) {
+        if (ev.data instanceof Uint8Array)
+          return;
+        width = _this.decoder_width = ev.data.width;
+        height = _this.decoder_height = ev.data.height;
+        _this.canvas.width = width;
+        _this.canvas.height = height;
+        _this.renderer.init(_this.canvas, width, height);
+        _this.renderer_initialized = true;
+        return;
+    }
+    if (ev.data.length == 1)
+        return;
+    var yuv = ev.data;
+    if (_this.renderer.is_rgba()) {
+        _this.renderer.render(yuv, yuv, yuv);
+    }
+    else {
+        var s = _this.decoder_width * _this.decoder_height;
+        var y = yuv.subarray(0, s);
+        var u = yuv.subarray(s, s * 1.25);
+        var v = yuv.subarray(s * 1.25, s * 1.5);
+        _this.renderer.render(y, u, v);
+    }
+  }
+  var parser = new nalParser({
+    decode: function(byteArray){
+      _this.decoder.postMessage(byteArray);
+    }
+  });
+  this.play = function(buffer){
+    parser.parse(buffer);
+  }
+}
+
+function nalParser(player){
   var bufferAr = [];
   var concatUint8 = function(parAr) {
     if (!parAr || !parAr.length){
@@ -35,8 +87,7 @@ function H264Player(){
     };
     return res;
   };
-  
-  this.play = function(buffer){
+  this.parse = function(buffer){
     if (!(buffer && buffer.byteLength)){
       return;
     };
@@ -45,7 +96,7 @@ function H264Player(){
       if (subarray){
         bufferAr.push(subarray);
       };
-      p.decode(concatUint8(bufferAr));
+      player.decode(concatUint8(bufferAr));
       bufferAr = [];
     };
 

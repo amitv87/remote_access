@@ -40,7 +40,6 @@
         <button angle="0">reset</button>
       </div>
     </div>
-    <div style="clear:both">
     <script src="/js/jquery-2.1.4.min.js"></script>
     <script src="/js/mpeg.js"></script>
     <script src="/js/format_reader.js"></script>
@@ -53,11 +52,12 @@
     <script src="/js/video_player.js"></script>
     <script src="/js/audio_players.js"></script>
     <script src="/js/interaction.js"></script>
+    <script src="/js/renderer.js"></script>
     <script src="/js/interact-1.2.4.min.js"></script>
     <script>
       var host = window.location.hostname;
+      // var host = '192.168.43.1';
       // var host = '192.168.1.2';
-      // var host = '192.168.1.4';
 
     	var ws_vidpath = 'ws://' + host + ':8081';
       var ws_audpath = 'ws://' + host + ':8082';
@@ -66,6 +66,10 @@
       var canvas = videoPlayer.canvas;
       var old_canvas = document.getElementById('canvas');
       old_canvas.parentNode.replaceChild(canvas, old_canvas);
+
+      // var canvas = document.getElementById('canvas');
+      // var videoPlayer = new OpenH264Player(canvas);
+
       var vid = new ws_client(ws_vidpath,function(data){
         videoPlayer.play(data);
       },function(){
@@ -120,6 +124,8 @@
         window.platform = data.platform;
         canvas.style.width = data.width + 'px';
         canvas.style.height = data.height + 'px';
+        // canvas.style['background-color'] = 'black';
+        window.aspectRatio = data.width / data.height;
         canvas.width = data.width;
         canvas.height = data.height;
         canvas.focus();
@@ -132,6 +138,7 @@
           setOrientation(data.orientation);
           canvas.style.cursor = "pointer";
         }
+        resizeCanvas();
       }
 
       initInteractions();

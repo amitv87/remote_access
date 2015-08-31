@@ -35,9 +35,34 @@ function setOrientation(value){
     case 180: angle = 180;break;
     case 270: angle = 90;break;
   }
-
   canvas.style.transform = "rotate(" + angle.toString() + "deg)";
+  resizeCanvas();
 }
+
+function resizeCanvas() {
+  var widthToHeight = window.aspectRatio;
+  var newWidth = window.innerWidth;
+  var newHeight = window.innerHeight;
+  var newWidthToHeight = newWidth / newHeight;
+
+  if(angle == 90 || angle == -90){
+    newWidth = window.innerHeight;
+    newHeight = window.innerWidth;
+    newWidthToHeight = 1 / newWidthToHeight;
+  }
+
+  if (newWidthToHeight > widthToHeight) {
+      newWidth = newHeight * widthToHeight;
+      canvas.style.height = newHeight + 'px';
+      canvas.style.width = newWidth + 'px';
+  } else {
+      newHeight = newWidth / widthToHeight;
+      canvas.style.width = newWidth + 'px';
+      canvas.style.height = newHeight + 'px';
+  }
+  canvas.style.marginTop = (window.innerHeight - newHeight) / 2 + 'px';
+}
+window.addEventListener('resize', resizeCanvas, false);
 
 function initInteractions(){
 	canvas.tabIndex = 1000;
@@ -104,10 +129,12 @@ function initInteractions(){
   }
   var newX = 0;
   var newY = 0;
+
+  var $canvas = $(canvas);
   function sendMouse(down, e){
     var cords = getcords(e);
-    newX = cords[0] / canvas.width;
-    newY = cords[1] / canvas.height;
+    newX = cords[0] / $canvas.width();
+    newY = cords[1] / $canvas.height();
     sendMouseWS(down,newX,newY);
   }
   function doMouseLeave(e){
@@ -263,7 +290,12 @@ function draggy(selector) {
       target.setAttribute('data-y', y);
     }
   });
-  $(selector + ' .bar').dblclick(function(){
-    $(selector + ' .holder').slideToggle();
+  // $(selector + ' .bar').dblclick(function(){
+  //   $(selector + ' .holder').slideToggle();
+  // });
+  $(selector).hover(function(){
+    $(selector + ' .holder').stop().slideDown();
+  },function(){
+    $(selector + ' .holder').stop().slideUp();
   });
 }
