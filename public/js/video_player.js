@@ -128,3 +128,38 @@ function nalParser(player){
     };
   };
 }
+
+function MSEPlayer(mime){
+  console.log('using', this);
+  var a_ms = document.createElement('video');
+  // document.appendChild(a_ms);
+  document.body.appendChild(a_ms);
+  a_ms.autoplay = true;
+  a_ms.controls = true;
+  var mediaSource = new MediaSource();
+  a_ms.src = window.URL.createObjectURL(mediaSource);
+
+  var sourceBuffer;
+  mediaSource.addEventListener('sourceopen', function() {
+    sourceBuffer = mediaSource.addSourceBuffer(mime);
+    a_ms.play();
+  }, true);
+  a_ms.load();
+
+
+  var _buffer = (new Uint8Array()).buffer;
+  this.play = function(data){
+    appendBuffer(data);
+    if(sourceBuffer && !sourceBuffer.updating){
+      sourceBuffer.appendBuffer(new Uint8Array(_buffer));
+      _buffer = (new Uint8Array()).buffer;
+    }
+  }
+
+  function appendBuffer(buffer) {
+    var tmp = new Uint8Array(_buffer.byteLength + buffer.byteLength);
+    tmp.set(new Uint8Array(_buffer), 0);
+    tmp.set(new Uint8Array(buffer), _buffer.byteLength);
+    _buffer = tmp.buffer;
+  };
+}
