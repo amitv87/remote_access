@@ -100,17 +100,19 @@ public class VideoCapturer {
                             }
                         }
                     }).start();
-                    
+
+                    MediaCodec.BufferInfo bufferInfo = new MediaCodec.BufferInfo();
                     try {
                         while (isRunning) {
-                            MediaCodec.BufferInfo bufferInfo = new MediaCodec.BufferInfo();
                             int outputBufferIndex = encoder.dequeueOutputBuffer(bufferInfo, 100);
                             if (outputBufferIndex >= 0) {
-                                ByteBuffer outputBuffer = outputBuffers[outputBufferIndex];
-                                byte[] outData = new byte[bufferInfo.size];
-                                outputBuffer.get(outData);
                                 if (ws.isOpen()) {
                                     try {
+                                        ByteBuffer outputBuffer = outputBuffers[outputBufferIndex];
+                                        outputBuffer.position(bufferInfo.offset);
+                                        outputBuffer.limit(bufferInfo.offset + bufferInfo.size);
+                                        byte[] outData = new byte[bufferInfo.size];
+                                        outputBuffer.get(outData);
                                         ws.send(outData);
                                     } catch (Exception e) {
                                         isRunning = false;
@@ -119,6 +121,11 @@ public class VideoCapturer {
                                 } else
                                     isRunning = false;
                                 encoder.releaseOutputBuffer(outputBufferIndex, false);
+                            }
+                            else if (outputBufferIndex == MediaCodec.INFO_TRY_AGAIN_LATER) {
+                                if (!isRunning) break;
+                            } else if (outputBufferIndex == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED) {
+                                outputBuffers = encoder.getOutputBuffers();
                             }
                         }
                     }
