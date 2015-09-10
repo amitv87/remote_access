@@ -40,9 +40,9 @@ public class VideoCapturer {
                 final int height = Global.s_height;
                 try {
                     MediaFormat encoderInputFormat = MediaFormat.createVideoFormat("video/avc", width, height);
-                    encoderInputFormat.setInteger(MediaFormat.KEY_BIT_RATE, 2 * 1024 * 1024);
+                    encoderInputFormat.setInteger(MediaFormat.KEY_BIT_RATE, 1024 * 1024 * 3 / 2);
                     encoderInputFormat.setInteger(MediaFormat.KEY_FRAME_RATE, 30);
-                    encoderInputFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 1000000);
+                    encoderInputFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 300);
 //                    encoderInputFormat.setInteger(MediaFormat.KEY_REPEAT_PREVIOUS_FRAME_AFTER, 33333);
                     encoderInputFormat.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
                     Log.i(TAG, "encoderInputFormat: " + encoderInputFormat.toString());
