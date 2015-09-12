@@ -35,18 +35,9 @@ public class InputManager {
     public static void init(){
         if(iim == null){
             initInputManager();
-            KeyInputEvent.init();
-            MotionInputEvent.init();
         }
     }
-    
-    public static IInputManager getIInputManager(){
-        if(iim == null){
-            initInputManager();
-        }
-        return iim;
-    }
-    
+
     public static void DispatchEvent(final InputEvent inputEvent){
         mainHandler.post(new Runnable() {
             public void run() {

@@ -11,18 +11,11 @@ import android.view.KeyEvent;
 
 public class KeyInputEvent {
     private static String TAG = KeyInputEvent.class.getCanonicalName();
-    private HashMap<String, Integer> actionMap;
-    private HashMap<Integer, Integer> specialKeyMap;
-    private int deviceId = KeyCharacterMap.VIRTUAL_KEYBOARD;
+    private static HashMap<String, Integer> actionMap = new HashMap<String, Integer>();
+    private static HashMap<Integer, Integer> specialKeyMap = new HashMap<Integer, Integer>();
+    private static int deviceId = KeyCharacterMap.VIRTUAL_KEYBOARD;
 
-    private static KeyInputEvent kv;
-    public static void init(){
-        if(kv == null)
-            kv = new KeyInputEvent();
-    }
-
-    private KeyInputEvent() {
-        actionMap = new HashMap<String, Integer>();
+    static {
         actionMap.put("home", KeyEvent.KEYCODE_HOME);
         actionMap.put("menu", KeyEvent.KEYCODE_MENU);
         actionMap.put("search", KeyEvent.KEYCODE_SEARCH);
@@ -37,11 +30,20 @@ public class KeyInputEvent {
         actionMap.put("next", KeyEvent.KEYCODE_MEDIA_NEXT);
         actionMap.put("prev", KeyEvent.KEYCODE_MEDIA_PREVIOUS);
 
-        specialKeyMap = new HashMap<Integer, Integer>();
         specialKeyMap.put(32, KeyEvent.KEYCODE_SPACE);
         specialKeyMap.put(8, KeyEvent.KEYCODE_DEL);
         specialKeyMap.put(13, KeyEvent.KEYCODE_ENTER);
         specialKeyMap.put(27, KeyEvent.KEYCODE_ESCAPE);
+
+        specialKeyMap.put(20, KeyEvent.KEYCODE_CAPS_LOCK);
+        specialKeyMap.put(33, KeyEvent.KEYCODE_PAGE_UP);
+        specialKeyMap.put(34, KeyEvent.KEYCODE_PAGE_DOWN);
+        specialKeyMap.put(35, KeyEvent.KEYCODE_MOVE_END);
+        specialKeyMap.put(36, KeyEvent.KEYCODE_MOVE_HOME);
+        specialKeyMap.put(93, KeyEvent.KEYCODE_MENU);
+        specialKeyMap.put(45, KeyEvent.KEYCODE_INSERT);
+        specialKeyMap.put(46, KeyEvent.KEYCODE_FORWARD_DEL);
+
         specialKeyMap.put(38, KeyEvent.KEYCODE_DPAD_UP);
         specialKeyMap.put(40, KeyEvent.KEYCODE_DPAD_DOWN);
         specialKeyMap.put(37, KeyEvent.KEYCODE_DPAD_LEFT);
@@ -49,8 +51,9 @@ public class KeyInputEvent {
         specialKeyMap.put(9, KeyEvent.KEYCODE_TAB);
         specialKeyMap.put(16, KeyEvent.KEYCODE_SHIFT_LEFT);
         specialKeyMap.put(17, KeyEvent.KEYCODE_CTRL_LEFT);
-        specialKeyMap.put(91, KeyEvent.KEYCODE_CTRL_LEFT);
+        specialKeyMap.put(91, KeyEvent.KEYCODE_CTRL_RIGHT);
         specialKeyMap.put(18, KeyEvent.KEYCODE_ALT_LEFT);
+
 
         specialKeyMap.put(48, KeyEvent.KEYCODE_0);
         specialKeyMap.put(49, KeyEvent.KEYCODE_1);
@@ -89,7 +92,7 @@ public class KeyInputEvent {
     public static void Dispatch(final JSONArray arr){
         try {
             int keyCode = arr.getInt(1);
-            keyCode = kv.specialKeyMap.containsKey(keyCode) ? kv.specialKeyMap.get(keyCode) : keyCode - 36;
+            keyCode = specialKeyMap.containsKey(keyCode) ? specialKeyMap.get(keyCode) : keyCode - 36;
             sendKey(
                 keyCode,
                 arr.getInt(0) == 1 ? KeyEvent.ACTION_DOWN : KeyEvent.ACTION_UP,
@@ -106,8 +109,8 @@ public class KeyInputEvent {
         try {
             String action = arr.optString(0);
             Log.i(TAG, action);
-            if(kv.actionMap.containsKey(action)){
-                int keyCode = kv.actionMap.get(arr.getString(0));
+            if(actionMap.containsKey(action)){
+                int keyCode = actionMap.get(arr.getString(0));
                 sendKey(keyCode, KeyEvent.ACTION_DOWN, 0);
                 sendKey(keyCode, KeyEvent.ACTION_UP, 0);
             }
@@ -124,7 +127,7 @@ public class KeyInputEvent {
             keyCode,
             0,
             meta,
-            kv.deviceId,
+            deviceId,
             0,
             KeyEvent.FLAG_FROM_SYSTEM,
             InputDevice.SOURCE_KEYBOARD);

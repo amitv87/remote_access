@@ -20,6 +20,7 @@ import android.os.ServiceManager;
 import android.util.Log;
 import android.view.Display;
 import android.view.IWindowManager;
+import android.view.InputDevice;
 import android.view.WindowManager;
 
 public class Global {
@@ -117,6 +118,7 @@ public class Global {
 //            cm.addPrimaryClipChangedListener(clipboardListener);
 //            cm.setPrimaryClip(ClipData.newPlainText("text", "hello clipboard"));
 
+//            log("asdasd", InputDevice.getDevice(InputDevice.getDeviceIds()[0]).getDescriptor());
         } catch (final Exception e) {
             Log.i(TAG, e.getMessage(), e);
         }
