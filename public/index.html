@@ -81,7 +81,12 @@
       // var audioPlayer = new AudioPlayerContext('audio/aac');
       // var audioPlayer = new AudioPlayerURL('audio/aac');
       // var audioPlayer = new AudioPlayerJS('audio/mpeg');
-      var audioPlayer = new AudioPlayerMSE('audio/aac');
+
+      if(isChrome)
+        var audioPlayer = new AudioPlayerMSE('audio/aac');
+      else
+        var audioPlayer = new AudioPlayerURL('audio/mp3');
+
       var aud = new ws_client(ws_audpath, function(data){
         audioPlayer.play(data);
       });
