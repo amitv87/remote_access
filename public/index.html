@@ -5,7 +5,9 @@
     <link rel="stylesheet" type="text/css" href="/css/style.css">
   </head>
   <body style="text-align:center;">
-    <canvas id="canvas"></canvas>
+    <div>
+      <canvas id="canvas"></canvas>
+    </div>
     <div id="clipboard" class="draggy" style="display:none;">
       <div class="bar">clipboard</div>
       <div class="holder">
@@ -57,7 +59,7 @@
     <script>
       var host = window.location.hostname;
       // var host = '192.168.43.1';
-      // var host = '192.168.1.4';
+      // var host = '192.168.1.2';
 
     	var ws_vidpath = 'ws://' + host + ':8081';
       var ws_audpath = 'ws://' + host + ':8082';

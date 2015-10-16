@@ -11,7 +11,6 @@ img.onload = function() {
   canvas.style.cursor = cursorStyle;
 };
 function setCursor(data, noRepeat){
-  // console.log(data.offset, data.size, data.base64.length);
   can.width = data.size.Width;
   can.height = data.size.Height;
   can.style.width = data.size.Width + 'px';
@@ -108,7 +107,6 @@ function initInteractions(){
 
   var mouseDown = 0;
   function doMouseDown(e){
-    // e.target.onmousemove = doMouseMove;
     var type = (e.button == 2 ? 4 : 1);
     mouseDown = type;
     sendMouse(type, e);
@@ -116,7 +114,6 @@ function initInteractions(){
     return supress(e);
   }
   function doMouseUp(e){
-    // e.target.onmousemove = null;
     var type = (e.button == 2 ? 3 : 0);
     mouseDown = type;
     sendMouse(type, e);
@@ -161,26 +158,21 @@ function initInteractions(){
   window.sendSpecial = function(action){
       send([action]);
   }
-  var scroll = true;
+
+  var lineHeight = getLineHeight(canvas.parentElement);
   function doMouseWheel(e){
     if(canvas.android)
       return;
-    var x = Math.round(e.deltaX);
-    var y = -Math.round(e.deltaY);
+    var x = e.deltaX;
+    var y = e.deltaY;
+    if(e.deltaMode == 1){
+      x *= lineHeight;
+      y *= lineHeight;
+    }
+    x = Math.round(x);
+    y = -Math.round(y);
     send([x,y]);
     return supress(e);
-  }
-
-  function getWinScroll(value){
-    ret = value;
-    var abs = Math.abs(value);
-    if(abs > 0)
-      ret = 4 * (value/abs);
-    return Math.round(ret);
-    // var ret = Math.pow(abs,1/3) * (value/(abs ? abs : 1));
-    // var ret_abs = Math.abs(ret);
-    // if(ret_abs < 10 && ret_abs > 1)
-    //   ret = 4 * (ret/ret_abs);
   }
 
   function doTouchStart(e){
@@ -233,7 +225,6 @@ function initInteractions(){
   clipbox.click(function(e){
     clipbox.focus();
     clipbox.select();
-    // return false;
   });
 
   $('#controls button').click(function(){
@@ -277,12 +268,26 @@ function draggy(selector) {
       target.setAttribute('data-y', y);
     }
   });
-  // $(selector + ' .bar').dblclick(function(){
-  //   $(selector + ' .holder').slideToggle();
-  // });
   $(selector).hover(function(){
     $(selector + ' .holder').stop().slideDown();
   },function(){
     $(selector + ' .holder').stop().slideUp();
   });
+}
+
+function getLineHeight(element){
+  var ret = 0;
+  try{
+    var temp = document.createElement(element.nodeName);
+    temp.setAttribute("style","margin:0px;padding:0px;font-family:"+element.style.fontFamily+";font-size:"+element.style.fontSize);
+    temp.innerHTML = "test";
+    temp = element.parentNode.appendChild(temp);
+    console.log(temp);
+    ret = temp.clientHeight;
+    temp.parentNode.removeChild(temp);
+  }
+  catch(e){
+    console.error('getLineHeight error', e);
+  }
+  return ret;
 }
