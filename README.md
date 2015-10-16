@@ -1,5 +1,7 @@
 ### Remote control your mac / windows / [android](https://github.com/amitv87/remote_access/tree/master/android) from your browser in realtime with full interaction (including dirty clipboard support) and audio support
 
+[![Alt text for your video](https://i.ytimg.com/vi/URjxY663Opc/hqdefault.jpg)](https://www.youtube.com/watch?v=URjxY663Opc&feature=youtu.be)
+
 Setup
 ---
 Clone the repo and pull latest FFmpeg static build executable (win: http://ffmpeg.zeranoe.com/builds/, mac: http://evermeet.cx/ffmpeg/)
