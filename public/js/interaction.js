@@ -167,20 +167,7 @@ function initInteractions(){
       return;
     var x = Math.round(e.deltaX);
     var y = -Math.round(e.deltaY);
-
-    if(window.platform == 'win') {
-      x = getWinScroll(x);
-      y = getWinScroll(y);
-      if(scroll){
-        scroll = false;
-        setTimeout(function(){
-          send([x,y]);
-          scroll = true;
-        },45)
-      }
-    }
-    else
-      send([x,y]);
+    send([x,y]);
     return supress(e);
   }
 

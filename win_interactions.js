@@ -39,8 +39,8 @@ var sendEvent = edge.func({
         }
         else if (obj.Length == 2)
         {
-          mo.HorizontalScroll(obj[0]/4);
-          mo.VerticalScroll(obj[1]/4);
+          mo.HorizontalScroll(obj[0]);
+          mo.VerticalScroll(obj[1]);
         }
         return 1;
       }
@@ -74,7 +74,7 @@ var _getCursorState = edge.func({
         if(ci.cbSize == 0)
           ci.cbSize = Marshal.SizeOf(ci);
         GetCursorInfo(out ci);
-        if(ci.hCursor.ToInt32() == lastHandle && obj == 0)
+        if(ci.hCursor.ToInt32() == lastHandle && obj == 0 && bmp != null)
           return false;
         lastHandle = ci.hCursor.ToInt32();
         mouse.info = ci;
