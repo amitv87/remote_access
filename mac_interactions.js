@@ -279,7 +279,7 @@ var sendEvent = function(arr){
     }
   }
   else if(arr.length == 2)
-    Scroll(arr[1]/10, arr[0]/10);
+    Scroll(arr[1]/30, arr[0]/30);
   else if(arr.length == 1)
     DoubleClick();
 }

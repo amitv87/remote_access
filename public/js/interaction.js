@@ -160,6 +160,7 @@ function initInteractions(){
   }
 
   var lineHeight = getLineHeight(canvas.parentElement);
+  // console.log('lineHeight', lineHeight);
   function doMouseWheel(e){
     if(canvas.android)
       return;
