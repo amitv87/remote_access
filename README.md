@@ -10,7 +10,7 @@ Clone the repo and pull latest FFmpeg static build executable (win: http://ffmpe
 - http-server
 - node ws.js
 
-open http://localhost:8080 in a browser and remote session should start
+open http://<remote ip>:8080 in a browser and remote session should start
 
 Server-side
 ---
